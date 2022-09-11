@@ -1,247 +1,230 @@
 <!DOCTYPE html>
 <html>
-
-<body>
-
+  <body>
     <form enctype="multipart/form-data">
-        <input id="upload" type=file accept="text/csv" name="files[]" size=30>
+      <input
+        id="upload"
+        type="file"
+        accept="text/csv"
+        name="files[]"
+        size="30"
+      />
     </form>
 
     <div id="results"></div>
-</body>
-
+  </body>
 </html>
 
 <script>
-    const RecordCollation = new class {
-        id = 'A'
-        pharmacy = 'C'
-        leftovers = 'N'
-        med = 'F'
-        line = 'D'
+  const RecordCollation = new (class {
+    id = "A";
+    pharmacy = "C";
+    leftovers = "N";
+    med = "F";
+    line = "D";
+  })();
+
+  const MedType = new (class {
+    Apidra = "апидра";
+    Soliqua33 = "соликва 33";
+    Soliqua50 = "соликва 50";
+    Tugeo3 = "туджео n3";
+    Tugeo5 = "туджео n5";
+  })();
+
+  const LineType = new (class {
+    Diabetes = "диабет";
+    ONLS = "онлс";
+    RLO = "рло";
+    Orphan = "орфан";
+    VZN = "взн";
+  })();
+
+  class Record {
+    constructor(id, pharmacy, leftovers, medType, lineType) {
+      this.id = id;
+      this.pharmacy = pharmacy;
+      this.leftovers = leftovers;
+      this.medType = medType;
+      this.lineType = lineType;
+    }
+  }
+
+  const Parser = new (class {
+    strMatchRegExp = new RegExp(/^\d+\t.*?\t.*$/i);
+    numRegExp = new RegExp(/^(.*?)[,.](\d*)$/);
+
+    parse(v) {
+      return this.__parse(v);
     }
 
-    const MedType = new class {
-        Apidra = "апидра"
-        Soliqua33 = "соликва 33"
-        Soliqua50 = "соликва 50"
-        Tugeo3 = "туджео n3"
-        Tugeo5 = "туджео n5"
+    toCSV(sheets) {
+      const result = [];
+      for (const sheet of sheets) {
+        const heading = `Pharmacy\t` + Object.keys(LineType).join("\t");
+        const rows = [...sheet[1]].map((x) =>
+          [x[0], ...x[1].values()].join("\t")
+        );
+        result.push([sheet[0], [heading, ...rows].join("\n\r")]);
+      }
+      return result;
     }
 
-    const LineType = new class {
-        Diabetes = "диабет"
-        ONLS = "онлс"
-        RLO = "рло"
-        Orphan = "орфан"
-        VZN = "взн"
+    __parse(v) {
+      const lines = this.__readLines(v);
+      const records = this.__linesToObjects(lines);
+      const result = this.__formatRecords(records);
+      return result;
     }
 
-    class Record {
+    __formatRecords(v) {
+      const linesMap = () => new Map(Object.keys(LineType).map((x) => [x, 0]));
 
-        constructor(
-            id,
-            pharmacy,
-            leftovers,
-            medType,
-            lineType
-        ) {
-            this.id = id;
-            this.pharmacy = pharmacy;
-            this.leftovers = leftovers;
-            this.medType = medType;
-            this.lineType = lineType;
+      const pharmsMap = () =>
+        new Map(v.map((x) => [x.pharmacy.trim(), new Map(linesMap())]));
+
+      const sheets = new Map(
+        Object.keys(MedType).map((x) => [x, new Map(pharmsMap())])
+      );
+
+      for (const record of v) {
+        const pharms = sheets.get(record.medType);
+        if (!pharms) {
+          continue;
         }
+
+        const lines = pharms.get(record.pharmacy);
+        if (!lines) {
+          continue;
+        }
+        // *100 to avoid float operations
+        const leftover =
+          lines.get(record.lineType) * 100 +
+          this.__strToNum(record.leftovers) * 100;
+        lines.set(record.lineType, leftover / 100);
+      }
+
+      return sheets;
     }
 
-    const Parser = new class {
-        strMatch = new RegExp(/^\d+\t.*?\t.*$/i);
-
-        parse(v) {
-            return this.__parse(v);
-        }
-
-        toCSV(sheets) {
-            const result = [];
-            for (const sheet of sheets) {
-                const heading = `Pharmacy\t` + Object.keys(LineType).join('\t')
-                const rows = [...sheet[1]].map(x => [x[0], ...x[1].values()].join('\t'));
-                result.push([sheet[0], [heading, ...rows].join('\n\r')]);
-            }
-            return result;
-        }
-
-        __parse(v) {
-            const lines = this.__readLines(v);
-            const records = this.__linesToObjects(lines);
-            const result = this.__formatRecords(records);
-            return result;
-        }
-
-        __formatRecords(v) {
-            const linesMap = () => new Map(
-                Object.keys(LineType).map(x =>
-                    ([x, 0])
-                )
-            );
-
-            const pharmsMap = () => new Map(
-                v.map(x =>
-                    ([x.pharmacy.trim(), new Map(linesMap())])
-                )
-            );
-
-            const sheets = new Map(
-                Object.keys(MedType).map(x =>
-                    ([x, new Map(pharmsMap())])
-                )
-            );
-
-            for (const record of v) {
-                const pharms = sheets.get(record.medType);
-                if (!pharms) {
-                    continue;
-                }
-
-                const lines = pharms.get(record.pharmacy)
-                if (!lines) {
-                    continue;
-                }
-                const leftover = lines.get(record.lineType) * 100 + this.__strToNum(record.leftovers) * 100;
-                lines.set(record.lineType, leftover / 100)
-            }
-
-            return sheets
-        }
-
-        __strToNum(v) {
-            console.log('__strToNum', v)
-            const r = new RegExp(/^(.*?)[,.](\d*)$/);
-            const fragments = `${v}`.split(r);
-            return Number(
-                `${fragments[1].replace(/[^\d]/g, '')}.${fragments[2].replace(/[^\d]/g, '')}`
-            );
-        }
-
-        __createSheet(medType, v) {
-            const pharms = new Map(v.map(x => (
-                [x.pharmacy.trim(), new Map(
-                    Object.keys(LineType).map(x => ([x, 0])
-                    ))]
-            )));
-            for (const record of v) {
-                if (record.medType !== medType) {
-                    continue;
-                }
-                const current = pharms.get(record.pharmacy.trim())
-                const line = current.get(record.lineType)
-            }
-        }
-
-        __linesToObjects(v) {
-            const _ = []
-            const records = v.reduce((p, n) => {
-                const m = n.split('\t');
-                const record = new Record(
-                    m[0],
-                    m[this.__letterToNumber(RecordCollation.pharmacy)],
-                    m[this.__letterToNumber(RecordCollation.leftovers)],
-                    this.__toMedType(m[this.__letterToNumber(RecordCollation.med)]),
-                    this.__toLineType(m[this.__letterToNumber(RecordCollation.line)])
-                );
-                return [...p, record];
-            }, _);
-            return records;
-        }
-
-        __toMedType(v) {
-            for (const p of Object.keys(MedType)) {
-                const re = new RegExp(MedType[p].replace(' ', '.*'))
-                if (v?.toLocaleLowerCase()?.match(re)) {
-                    return p
-                }
-            }
-            return null;
-        }
-
-        __toLineType(v) {
-            for (const p of Object.keys(LineType)) {
-                if (v?.toLocaleLowerCase()?.includes(LineType[p])) {
-                    return p
-                }
-            }
-            return null;
-        }
-
-        __readLines(v) {
-            const lines = v.split(/\r\n|\n/);
-            const _ = []
-            const dataLines = lines.reduce((p, n) => {
-                if (n?.trim() === '') {
-                    return p;
-                }
-                if (!n?.match(this.strMatch)) {
-                    return p;
-                }
-                return [...p, n]
-            }, _);
-            return dataLines;
-        }
-
-        __letterToNumber(val) {
-            const base = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let i, j, result = 0;
-
-            for (i = 0, j = val.length - 1; i < val.length; i += 1, j -= 1) {
-                result += Math.pow(base.length, j) * (base.indexOf(val[i]) + 1);
-            }
-
-            return result - 1;
-        };
+    __strToNum(v) {
+      const fragments = `${v}`.split(this.numRegExp);
+      const a = fragments[1].replace(/[^\d]/g, "");
+      const b = fragments[2].replace(/[^\d]/g, "");
+      return Number(`${a}.${b}`);
     }
 
-    function handleFileSelect(evt) {
-        let files = evt.target.files; // FileList object
-
-        // use the 1st file from the list
-        let f = files[0];
-
-        let reader = new FileReader();
-
-        // Closure to capture the file information.
-        reader.onload = (function (theFile) {
-            return function (e) {
-                const placeholder = document.getElementById('results');
-                sheets = Parser.parse(e.target.result);
-                console.log('sheets')
-                console.log(sheets)
-                results = Parser.toCSV(sheets);
-                console.log(results)
-                for (const result of results) {
-                    const div = document.createElement('div');
-                    const divDownload = document.createElement('div');
-                    const aDownload = document.createElement('a');
-                    aDownload.innerHTML = `${result[0]}. Скачать`;
-                    aDownload.href = window.URL.createObjectURL(new Blob([`${result[1]}`], { type: "text/plain" }));
-                    aDownload.download = `${result[0]}-converted.csv`;
-                    const textarea = document.createElement('textarea');
-                    textarea.rows = 10;
-                    textarea.cols = 40;
-                    textarea.value = result[1];
-
-                    divDownload.appendChild(aDownload);
-                    div.appendChild(divDownload)
-                    div.appendChild(textarea)
-                    placeholder.appendChild(div);
-                }
-            };
-        })(f);
-
-        // Read in the image file as a data URL.
-        reader.readAsText(f);
+    __linesToObjects(v) {
+      const _ = [];
+      const records = v.reduce((p, n) => {
+        const m = n.split("\t");
+        const record = new Record(
+          m[0],
+          m[this.__letterToNumber(RecordCollation.pharmacy)],
+          m[this.__letterToNumber(RecordCollation.leftovers)],
+          this.__toMedType(m[this.__letterToNumber(RecordCollation.med)]),
+          this.__toLineType(m[this.__letterToNumber(RecordCollation.line)])
+        );
+        return [...p, record];
+      }, _);
+      return records;
     }
 
-    document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+    __toMedType(v) {
+      for (const p of Object.keys(MedType)) {
+        const re = new RegExp(MedType[p].replace(" ", ".*"));
+        if (v?.toLocaleLowerCase()?.match(re)) {
+          return p;
+        }
+      }
+      return null;
+    }
 
+    __toLineType(v) {
+      for (const p of Object.keys(LineType)) {
+        if (v?.toLocaleLowerCase()?.includes(LineType[p])) {
+          return p;
+        }
+      }
+      return null;
+    }
 
+    __readLines(v) {
+      const lines = v.split(/\r\n|\n/);
+      const _ = [];
+      const dataLines = lines.reduce((p, n) => {
+        if (n?.trim() === "") {
+          return p;
+        }
+        if (!n?.match(this.strMatchRegExp)) {
+          return p;
+        }
+        return [...p, n];
+      }, _);
+      return dataLines;
+    }
+
+    __letterToNumber(val) {
+      const base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let i,
+        j,
+        result = 0;
+
+      for (i = 0, j = val.length - 1; i < val.length; i += 1, j -= 1) {
+        result += Math.pow(base.length, j) * (base.indexOf(val[i]) + 1);
+      }
+
+      return result - 1;
+    }
+  })();
+
+  function parseContent(content) {
+    const placeholder = document.getElementById("results");
+
+    sheets = Parser.parse(content);
+    results = Parser.toCSV(sheets);
+
+    for (const result of results) {
+      const div = document.createElement("div");
+      const divDownload = document.createElement("div");
+
+      const aDownload = document.createElement("a");
+      aDownload.innerHTML = `${result[0]}. Скачать`;
+      aDownload.href = window.URL.createObjectURL(
+        new Blob([`${result[1]}`], { type: "text/plain" })
+      );
+      aDownload.download = `${result[0]}-converted.csv`;
+
+      const textarea = document.createElement("textarea");
+      textarea.rows = 10;
+      textarea.cols = 40;
+      textarea.value = result[1];
+
+      divDownload.appendChild(aDownload);
+      div.appendChild(divDownload);
+      div.appendChild(textarea);
+      placeholder.appendChild(div);
+    }
+  }
+
+  function handleFileSelect(evt) {
+    let files = evt.target.files; // FileList
+    let f = files[0];
+    let reader = new FileReader();
+
+    // Capture the file information.
+    reader.onload = (function (theFile) {
+      return function (e) {
+        const content = e.target.result;
+        parseContent(content);
+      };
+    })(f);
+
+    // Read in the image file as a data URL.
+    reader.readAsText(f);
+  }
+
+  document
+    .getElementById("upload")
+    .addEventListener("change", handleFileSelect, false);
 </script>
