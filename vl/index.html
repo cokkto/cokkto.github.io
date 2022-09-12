@@ -180,6 +180,7 @@
 
   function parseContent(content) {
     const placeholder = document.getElementById("results");
+    placeholder.innerText = "";
 
     sheets = Parser.parse(content);
     results = Parser.toCSV(sheets);
@@ -203,7 +204,8 @@
       divDownload.appendChild(aDownload);
       div.appendChild(divDownload);
       div.appendChild(textarea);
-      placeholder.replaceChildren(div);
+      
+      placeholder.appendChild(div);
     }
   }
 
