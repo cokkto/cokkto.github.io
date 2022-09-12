@@ -1,17 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <form enctype="multipart/form-data">
-      <input
-        id="upload"
-        type="file"
-        accept="text/csv"
-        name="files[]"
-        size="30"
-      />
-    </form>
+  <head>
+    <!-- Decimal.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/9.0.0/decimal.min.js"></script>
 
-    <div id="results"></div>
+    <!-- Google Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"
+    />
+
+    <!-- CSS Reset -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"
+    />
+
+    <!-- Milligram CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+
+    <style>
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      form {
+        padding-top: 1rem;
+      }
+      details {
+        margin-bottom: 1rem;
+      }
+      summary {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <p>Инструкция</p>
+        <ol>
+          <li>
+            Сохранить в формате .csv, разделитель&nbsp;&mdash; знак табуляции
+          </li>
+          <li>Загрузить</li>
+          <li>Скачать результаты</li>
+        </ol>
+      </div>
+      <form enctype="multipart/form-data">
+        <input
+          id="upload"
+          type="file"
+          accept="text/csv"
+          name="files[]"
+          size="30"
+        />
+      </form>
+
+      <div id="results"></div>
+    </main>
   </body>
 </html>
 
@@ -52,7 +102,6 @@
 
   const Parser = new (class {
     strMatchRegExp = new RegExp(/^\d+\t.*?\t.*$/i);
-    numRegExp = new RegExp(/^(.*?)[,.](\d*)$/);
 
     parse(v) {
       return this.__parse(v);
@@ -97,21 +146,18 @@
         if (!lines) {
           continue;
         }
-        // *100 to avoid float operations
-        const leftover =
-          lines.get(record.lineType) * 100 +
-          this.__strToNum(record.leftovers) * 100;
-        lines.set(record.lineType, leftover / 100);
+        // use Decimal to avoid float operations
+        const leftover = new Decimal(lines.get(record.lineType)).plus(
+          new Decimal(this.__strToNum(record.leftovers))
+        );
+        lines.set(record.lineType, +leftover);
       }
 
       return sheets;
     }
 
     __strToNum(v) {
-      const fragments = `${v}`.split(this.numRegExp);
-      const a = fragments[1].replace(/[^\d]/g, "");
-      const b = fragments[2].replace(/[^\d]/g, "");
-      return Number(`${a}.${b}`);
+      return v?.replace(",", ".");
     }
 
     __linesToObjects(v) {
@@ -188,6 +234,9 @@
     for (const result of results) {
       const div = document.createElement("div");
       const divDownload = document.createElement("div");
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      summary.innerText = "Посмотреть результат";
 
       const aDownload = document.createElement("a");
       aDownload.innerHTML = `${result[0]}. Скачать`;
@@ -196,15 +245,21 @@
       );
       aDownload.download = `${result[0]}-converted.csv`;
 
-      const textarea = document.createElement("textarea");
-      textarea.rows = 10;
-      textarea.cols = 40;
-      textarea.value = result[1];
+      const table = document.createElement("table");
+      for (let row of result[1].split("\n")) {
+        let tr = table.insertRow();
+        for (let col of row.split("\t")) {
+          let td = tr.insertCell();
+          td.innerHTML = col;
+        }
+      }
 
       divDownload.appendChild(aDownload);
+      details.appendChild(summary);
+      details.appendChild(table);
       div.appendChild(divDownload);
-      div.appendChild(textarea);
-      
+      div.appendChild(details);
+
       placeholder.appendChild(div);
     }
   }
