@@ -1,9 +1,3 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 .audio-player-container {
   display: flex;
   flex-wrap: wrap;
@@ -65,14 +59,13 @@ button:hover {
 
 .right {
   padding: 1rem;
-  max-height: 80vh;
-  overflow-y: auto;
   width: 100%;
-  max-width: 400px;
 }
 
 .tracklist {
   list-style: none;
+  margin: 0 3rem;
+  padding: 0;
 }
 
 .tracklist li {
@@ -110,6 +103,13 @@ button:hover {
     display: block;
     max-width: none;
     width: auto;
+    max-width: 50%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .tracklist {
+    margin: 0;
   }
 
   .desktop {

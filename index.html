@@ -1,15 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>cocteau.name</title>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="stylesheets/styles.css" />
+    <link rel="stylesheet" href="stylesheets/audioplayer.css" />
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
@@ -18,39 +22,51 @@
         <h1>cocteau.name</h1>
         <p></p>
 
-
-        <p class="view"><a href="https://linkedin.com/in/cocteau">View my Linked.In profile</a></p>
-
+        <p class="view">
+          <a href="https://linkedin.com/in/cocteau"
+            >View my Linked.In profile</a
+          >
+        </p>
       </header>
       <section>
-        
+        <h3>Aleksi Salo + Udio = Zerone</h3>
         <div class="audio-player-container">
-          <h3>Aleksi Salo + Udio = Zerone</h3>
-    		  <div class="left">
-      			<div class="media">
-      			  <img src="./audio/zerone/zerone.jpg" alt="Cover Art" class="cover" id="cover">
-      
-      			  <input type="range" id="seekbar" class="seekbar" value="0" min="0" max="100">
-      
-      			  <div class="controls">
-      				<button id="prev">⏮</button>
-      				<button id="play">&#9654;</button>
-      				<button id="next">⏭</button>
-      			  </div>
-      			</div>
-      
-      			<div class="right mobile" id="mobileTracklist">
-      			  <ul class="tracklist" id="tracklist-mobile"></ul>
-      			</div>
-    		  </div>
-    
-    		  <div class="right desktop" id="desktopTracklist">
-    			  <ul class="tracklist" id="tracklist"></ul>
-    		  </div>
-    
-    		  <audio id="player"></audio>
-    		</div>
+          <div class="left">
+            <div class="media">
+              <img
+                src="./audio/zerone/zerone.jpg"
+                alt="Cover Art"
+                class="cover"
+                id="cover"
+              />
 
+              <input
+                type="range"
+                id="seekbar"
+                class="seekbar"
+                value="0"
+                min="0"
+                max="100"
+              />
+
+              <div class="controls">
+                <button id="prev">⏮</button>
+                <button id="play">&#9654;</button>
+                <button id="next">⏭</button>
+              </div>
+            </div>
+
+            <div class="right mobile" id="mobileTracklist">
+              <ul class="tracklist" id="tracklist-mobile"></ul>
+            </div>
+          </div>
+
+          <div class="right desktop" id="desktopTracklist">
+            <ul class="tracklist" id="tracklist"></ul>
+          </div>
+
+          <audio id="player"></audio>
+        </div>
       </section>
       <footer>
         <p></p>
@@ -58,20 +74,20 @@
     </div>
     <script src="javascripts/scale.fix.js"></script>
     <script type="module">
-  	  import { initAudioPlayer } from './javascripts/audioplayer.js';
-  
-  	  const trackList = [
-  		"01 - 01 - Fading Horizons",
-  		"01 - 02 - Mirages of Light",
-  		"01 - 03 - Whispers of a Fading Dream",
-  		"01 - 04 - Eternal Shifts",
-  		"01 - 05 - Whispers of Spring",
-  		"01 - 06 - Kaamos",
-  		"01 - 07 - Snow walk",
-  		"01 - 08 - Spring goes to Hel"
-  	  ];
-  
-  	  initAudioPlayer(trackList);
-  	</script>
+      import { initAudioPlayer } from "./javascripts/audioplayer.js";
+
+      const trackList = [
+        "01 - 01 - Fading Horizons",
+        "01 - 02 - Mirages of Light",
+        "01 - 03 - Whispers of a Fading Dream",
+        "01 - 04 - Eternal Shifts",
+        "01 - 05 - Whispers of Spring",
+        "01 - 06 - Kaamos",
+        "01 - 07 - Snow walk",
+        "01 - 08 - Spring goes to Hel",
+      ];
+
+      initAudioPlayer(trackList);
+    </script>
   </body>
 </html>
