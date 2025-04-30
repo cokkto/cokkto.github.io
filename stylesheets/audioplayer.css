@@ -64,7 +64,7 @@ button:hover {
 
 .tracklist {
   list-style: none;
-  margin: 0 3rem;
+  margin: 0;
   padding: 0;
 }
 
