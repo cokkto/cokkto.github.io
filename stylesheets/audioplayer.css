@@ -1,0 +1,122 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.audio-player-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 860px;
+  margin: 1rem auto;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.left {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.media {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover {
+  width: 100%;
+  border-radius: 2rem;
+  margin-bottom: 1rem;
+}
+
+.seekbar {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  border: 1px solid #eee;
+  color: #555;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ccc;
+}
+
+.right {
+  padding: 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 400px;
+}
+
+.tracklist {
+  list-style: none;
+}
+
+.tracklist li {
+  padding: 0.5rem 2rem;
+  margin-bottom: 1rem;
+  background: none;
+  color: #333;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tracklist li.active {
+  background: #eee;
+}
+
+.desktop {
+  display: none;
+}
+
+@media (min-width: 860px) {
+  .audio-player-container {
+    flex-wrap: nowrap;
+  }
+
+  .left {
+    flex: 2;
+  }
+
+  .media {
+    max-width: none;
+  }
+
+  .right {
+    display: block;
+    max-width: none;
+    width: auto;
+  }
+
+  .desktop {
+    display: block;
+  }
+
+  .mobile {
+    display: none;
+  }
+}
