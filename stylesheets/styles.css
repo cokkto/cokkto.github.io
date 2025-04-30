@@ -14,7 +14,7 @@ h4,
 h5,
 h6 {
   color: #222;
-  margin: 0 0 20px;
+  margin: 0 0 1rem 1rem;
 }
 
 p,
@@ -113,6 +113,8 @@ img {
 }
 
 header {
+  border-bottom: 1px #ccc solid;
+  margin-bottom: 1rem;
 }
 
 header ul {
