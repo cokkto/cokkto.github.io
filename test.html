@@ -1,12 +1,40 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr"  lang="en-US" >
-<head>
-<meta charset="utf-8">
+<!DOCTYPE html>
+<html>
 <body>
-<div id="out"></div>
-<script>
+  <button onclick="openAndClose()">Open & auto-close</button>
 
-var out = document.getElementById("out");
-out.innerHTML = window.atob("dGVzdA==");
+<button onclick="openPopup()">Open & auto-close popup</button>
 
-</script>
+  <script>
+    function openAndClose() {
+      const w = window.open("https://google.com");
+      setTimeout(() => {
+	  console.log(w)
+        if (w && !w.closed) {
+          w.close();
+        }
+      }, 1000);
+    }
+	
+	function openPopup() {
+      // Open a small popup window (not a tab)
+      const popup = window.open(
+        "https://example.com", 
+        "popupWindow", 
+        "width=400,height=300"
+      );
+
+      if (popup) {
+        // Close it after 3 seconds
+        setTimeout(() => {
+          if (!popup.closed) {
+            popup.close();
+          }
+        }, 3000);
+      } else {
+        alert("Popup was blocked by the browser!");
+      }
+    }
+  </script>
+</body>
+</html>
