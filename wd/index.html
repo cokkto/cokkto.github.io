@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <title>Wiktionary Declension + RU/EN Meaning</title>
+  <title>Wiktionary Declension/Conjugation + RU/EN Meaning</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root { --gap: 14px; }
@@ -22,12 +22,11 @@
     .source { font-size: 12px; color: #666; margin-top: 10px; }
     details { border: 1px dashed #ddd; border-radius: 10px; padding: 10px; }
     details summary { cursor: pointer; }
-    .declension :is(table, .NavFrame, .inflection-table) { width: 100%; }
+    .inflection :is(table, .NavFrame, .inflection-table) { width: 100%; }
     .loading { opacity: .6; }
     .small { font-size: 12px; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .lemma { margin: 6px 0 14px; font-size: 14px; }
-    .lemma a { text-decoration: none; }
     .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid #ddd; margin-left: 6px; font-size: 12px; color: #444; }
     .gray { color: #777; }
     .ru-def-list { padding-left: 18px; margin: 0; }
@@ -35,10 +34,10 @@
   </style>
 </head>
 <body>
-  <h1>Wiktionary: склонение + значения (RU/EN)</h1>
+  <h1>Wiktionary: склонение/спряжение + значения (RU/EN)</h1>
 
   <form id="searchForm">
-    <input id="termInput" type="text" placeholder="Введите слово (напр. puuro / puuroa)" required />
+    <input id="termInput" type="text" placeholder="Введите слово (напр. puuro / puuroa / saada / saan)" required />
     <button type="submit">Искать</button>
     <button id="exampleBtn" type="button" class="secondary">пример</button>
   </form>
@@ -48,9 +47,9 @@
 
   <div class="grid">
     <div class="card results">
-      <h2>Declension (склонение)</h2>
-      <div id="declension" class="declension muted">Нет данных.</div>
-      <div class="source" id="declensionSrc"></div>
+      <h2>Inflection (склонение/спряжение)</h2>
+      <div id="inflection" class="inflection muted">Нет данных.</div>
+      <div class="source" id="inflectionSrc"></div>
     </div>
 
     <div class="grid">
@@ -70,11 +69,10 @@
   <div class="card">
     <details>
       <summary>Настройки / хелпы</summary>
-      <p class="small">• Работает через MediaWiki API (CORS <span class="mono">origin=*</span>, без ключей).<br>
-      • Ищет раздел <em>Finnish → Declension</em> (enwiktionary) и <em>Финский → Склонение</em> (ruwiktionary).<br>
-      • Значения: ru-вариант очищается — ключевое слово в <strong>&lt;strong&gt;</strong>, остальное серым (<span class="gray">тех. метки, примечания</span>).<br>
-      • Если введена форма (напр. <span class="mono">puuroa</span>), покажет внутреннюю подсказку «возможно это слово …?» и при клике выполнит поиск по лемме внутри приложения.<br>
-      • Похожие сервисы: <a target="_blank" rel="noreferrer" href="https://wikidict.github.io/">Wikidict</a>, <a target="_blank" rel="noreferrer" href="https://cooljugator.com/fi">Cooljugator (fi)</a>.</p>
+      <p class="small">• MediaWiki API (CORS origin=*).<br>
+      • Показывает Declension/Conjugation в одном блоке (EN приоритет, затем RU «Склонение/Спряжение»).<br>
+      • Подсказка «возможно это слово …?» для форм (существительные и глаголы), клик запускает поиск внутри приложения.<br>
+      • Значения RU: ключевое слово в <strong>&lt;strong&gt;</strong>, остальное серым.</p>
     </details>
   </div>
 
@@ -92,6 +90,10 @@
       const t = document.createElement('template');
       t.innerHTML = html.trim();
       return t.content;
+    }
+
+    function escapeHTML(s) {
+      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     function pickLangBlockSections(sections, langName) {
@@ -164,7 +166,6 @@
       return items;
     }
 
-    // --- RU "Значение": выделяем ключевое слово жирным, остальное серым
     function extractRU_ZnachenieEnhanced(htmlRuLangBlock, limit=5) {
       const root = htmlToNode(htmlRuLangBlock);
       const zHdr = [...root.querySelectorAll('.mw-headline')].find(n => n.textContent.trim() === 'Значение');
@@ -178,29 +179,17 @@
       if (!ol) return [];
       const items = [...ol.querySelectorAll(':scope > li')].slice(0, limit).map(li => {
         const raw = li.textContent.replace(/\s+/g,' ').trim();
-
-        // cut off examples/notes starting with ◆
         const noDiamond = raw.split('◆')[0].trim();
-
-        // remove obvious "(см. ...)" notes
         const noSee = noDiamond.replace(/\s*[\(\[]\s*см\.[^\)\]]*[\)\]]/gi, '').trim();
-
-        // split leading labels like "гастрон.", "разг.", "устар." etc.
         const labelMatch = noSee.match(/^((?:[A-Za-zА-Яа-яЁё\-]+\.\s*)+)(.*)$/u);
         const labels = labelMatch ? labelMatch[1].trim() : '';
         const afterLabels = (labelMatch ? labelMatch[2] : noSee).trim();
-
-        // main meaning: take up to first "." or ";" or ":" or " — "
         const core = (afterLabels.split(/(?: — |[.;:])/)[0] || afterLabels).trim();
-
-        // tail after core (the explanations)
         const idx = afterLabels.indexOf(core);
         const tail = idx >= 0 ? afterLabels.slice(idx + core.length).trim() : '';
-
         const grayParts = [];
         if (labels) grayParts.push(labels);
         if (tail) grayParts.push(tail.replace(/^[-—\s]+/, ''));
-
         const gray = grayParts.join(' ').trim();
         const html = gray ? `<strong>${escapeHTML(core)}</strong> <span class="gray">${escapeHTML(gray)}</span>`
                           : `<strong>${escapeHTML(core)}</strong>`;
@@ -209,19 +198,19 @@
       return items;
     }
 
-    function extractDeclensionTableFromSectionHTML(sectionHTML) {
+    function extractTable(sectionHTML) {
       const root = htmlToNode(sectionHTML);
       const table = root.querySelector('table') || root.querySelector('.inflection-table') || root.firstElementChild;
       return table ? table.outerHTML : sectionHTML;
     }
 
-    // Detect if EN Finnish block is an "inflected-form" page (so we should show a lemma hint)
+    // Expanded detection of "inflected form" pages (nouns + verbs)
     function isInflectedPageENFinnish(htmlFinnishBlock) {
-      const text = htmlToNode(htmlFinnishBlock).textContent.toLowerCase();
-      return /\b(inflection|form|genitive|partitive|illative|elative|inessive|adessive|ablative|allative|plural|singular)\s+of\b/.test(text);
+      const t = htmlToNode(htmlFinnishBlock).textContent.toLowerCase();
+      return /\b(inflection|form|genitive|partitive|inessive|elative|illative|allative|ablative|adessive|essive|translative|comitative|instructive|abessive|plural|singular|comparative|superlative|indicative|conditional|potential|imperative|passive|present|past|perfect|imperfect|connegative|first-?person|second-?person|third-?person)\b/.test(t) && /\bof\b/.test(t);
     }
 
-    // Try to detect lemma (nominative) link on EN Finnish block (for inflected-form pages)
+    // Extract lemma target from EN Finnish block (works for both noun/verb forms)
     function extractLemmaFromENFinnish(htmlFinnishBlock, currentTitle) {
       const root = htmlToNode(htmlFinnishBlock);
       const cur = (currentTitle || '').trim().toLowerCase();
@@ -246,40 +235,49 @@
       });
       const a = cand[0];
       const page = decodeURIComponent(a.getAttribute('href').split('/wiki/')[1] || '').split('#')[0];
-      const text = a.textContent.trim();
-      return { text, page };
+      return { page, text: a.textContent.trim() };
     }
 
-    async function getENDeclensionAndDefs(title) {
+    async function getENInflectionAndDefs(title) {
       const normTitle = await mwNormalizeTitle(EN_API, title);
       const { sections } = await mwParsePageSections(EN_API, normTitle);
       const lang = pickLangBlockSections(sections, 'Finnish');
-      if (!lang) return { declensionHTML: '', finnishBlockHTML: '', srcTitle: normTitle };
+      if (!lang) return { declensionHTML: '', conjugationHTML: '', finnishBlockHTML: '', srcTitle: normTitle };
       const declSec = lang.indexOf('Declension');
-      let declHTML = '';
+      const conjSec = lang.indexOf('Conjugation');
+      let declHTML = '', conjHTML = '';
       if (declSec) {
-        declHTML = await mwParseSectionHTML(EN_API, normTitle, declSec.index);
-        declHTML = extractDeclensionTableFromSectionHTML(declHTML);
+        const html = await mwParseSectionHTML(EN_API, normTitle, declSec.index);
+        declHTML = extractTable(html);
+      }
+      if (conjSec) {
+        const html = await mwParseSectionHTML(EN_API, normTitle, conjSec.index);
+        conjHTML = extractTable(html);
       }
       const finnishSectionIndex = sections[lang.start].index;
       const finHTML = await mwParseSectionHTML(EN_API, normTitle, finnishSectionIndex);
-      return { declensionHTML: declHTML, finnishBlockHTML: finHTML, srcTitle: normTitle };
+      return { declensionHTML: declHTML, conjugationHTML: conjHTML, finnishBlockHTML: finHTML, srcTitle: normTitle };
     }
 
-    async function getRUSkлонениеAndZnachenie(title) {
+    async function getRUInflectionAndDefs(title) {
       const normTitle = await mwNormalizeTitle(RU_API, title);
       const { sections } = await mwParsePageSections(RU_API, normTitle);
       const lang = pickLangBlockSections(sections, 'Финский');
-      if (!lang) return { declensionHTML: '', ruBlockHTML: '', srcTitle: normTitle };
+      if (!lang) return { declensionHTML: '', conjugationHTML: '', ruBlockHTML: '', srcTitle: normTitle };
       const skl = lang.indexOf('Склонение');
-      let sklHTML = '';
+      const spr = lang.indexOf('Спряжение');
+      let sklHTML = '', sprHTML = '';
       if (skl) {
-        sklHTML = await mwParseSectionHTML(RU_API, normTitle, skl.index);
-        sklHTML = extractDeclensionTableFromSectionHTML(sklHTML);
+        const html = await mwParseSectionHTML(RU_API, normTitle, skl.index);
+        sklHTML = extractTable(html);
+      }
+      if (spr) {
+        const html = await mwParseSectionHTML(RU_API, normTitle, spr.index);
+        sprHTML = extractTable(html);
       }
       const ruLangIndex = sections[lang.start].index;
       const ruHTML = await mwParseSectionHTML(RU_API, normTitle, ruLangIndex);
-      return { declensionHTML: sklHTML, ruBlockHTML: ruHTML, srcTitle: normTitle };
+      return { declensionHTML: sklHTML, conjugationHTML: sprHTML, ruBlockHTML: ruHTML, srcTitle: normTitle };
     }
 
     function setHTML(id, html, emptyText='Нет данных.') {
@@ -314,60 +312,56 @@
       box.innerHTML = `возможно это слово <a href="#" data-lemma="${safe}">${safe}</a>? <span class="pill">#Finnish</span>`;
     }
 
-    function escapeHTML(s) {
-      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-
     async function run(query) {
       STATUS.textContent = 'Загрузка…';
       document.body.classList.add('loading');
 
-      setHTML('declension','');
+      setHTML('inflection','');
       setListText('meaningEN',[]);
       setListHTML('meaningRU',[]);
-      $('declensionSrc').textContent = '';
+      $('inflectionSrc').textContent = '';
       $('ruSrc').textContent = '';
       $('enSrc').textContent = '';
       $('lemmaEN').innerHTML = '';
 
       try {
-        const en = await getENDeclensionAndDefs(query);
-
-        // RU part
+        const en = await getENInflectionAndDefs(query);
         const ruTitle = (await mwGetLangLinkToRU(en.srcTitle)) || query;
-        const ru = await getRUSkлонениеAndZnachenie(ruTitle);
+        const ru = await getRUInflectionAndDefs(ruTitle);
 
-        // Decide declension source
-        const declHTML = en.declensionHTML || ru.declensionHTML || '';
-        setHTML('declension', declHTML || '');
+        const chosenHTML =
+          en.declensionHTML || en.conjugationHTML ||
+          ru.declensionHTML || ru.conjugationHTML || '';
 
-        // EN/RU meanings
+        setHTML('inflection', chosenHTML);
+
+        if (chosenHTML) {
+          let from = '';
+          if (en.declensionHTML || en.conjugationHTML) {
+            from = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_EN_PAGE(en.srcTitle)}">en.wiktionary.org/wiki/${encodeURIComponent(en.srcTitle)}</a> → ${en.declensionHTML ? 'Declension' : 'Conjugation'}`;
+          } else if (ru.declensionHTML || ru.conjugationHTML) {
+            from = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_RU_PAGE(ru.srcTitle)}">ru.wiktionary.org/wiki/${encodeURIComponent(ru.srcTitle)}</a> → ${ru.declensionHTML ? 'Склонение' : 'Спряжение'}`;
+          }
+          $('inflectionSrc').innerHTML = from;
+        }
+
         const defsEN = extractFirstDefinitionsFromENFinnish(en.finnishBlockHTML, 5);
         const defsRUenh = extractRU_ZnachenieEnhanced(ru.ruBlockHTML, 5);
-
         setListText('meaningEN', defsEN.length ? defsEN : []);
         setListHTML('meaningRU', defsRUenh.length ? defsRUenh.map(x => x.html) : []);
 
-        // Sources
-        if (declHTML) {
-          const src = en.declensionHTML ?
-            `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_EN_PAGE(en.srcTitle)}">en.wiktionary.org/wiki/${encodeURIComponent(en.srcTitle)}</a> → Declension` :
-            `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_RU_PAGE(ru.srcTitle)}">ru.wiktionary.org/wiki/${encodeURIComponent(ru.srcTitle)}</a> → Склонение`;
-          $('declensionSrc').innerHTML = src;
-        }
         $('enSrc').innerHTML = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_EN_PAGE(en.srcTitle)}">en.wiktionary.org/wiki/${encodeURIComponent(en.srcTitle)}</a>`;
         $('ruSrc').innerHTML = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_RU_PAGE(ru.srcTitle)}">ru.wiktionary.org/wiki/${encodeURIComponent(ru.srcTitle)}</a>`;
 
-        // Lemma suggestion:
-        // show only if EN page looks like an inflected-form entry AND (to avoid false hints) there is NO EN Declension table
-        if (!en.declensionHTML && isInflectedPageENFinnish(en.finnishBlockHTML)) {
+        // Show lemma hint only if page looks like an inflected-form entry AND there is no EN inflection table (declension or conjugation)
+        if (!(en.declensionHTML || en.conjugationHTML) && isInflectedPageENFinnish(en.finnishBlockHTML)) {
           const lemma = extractLemmaFromENFinnish(en.finnishBlockHTML, en.srcTitle);
           showLemmaInternalLink(lemma);
         } else {
-          showLemmaInternalLink(null); // don't show for nominatives (fixes "hieno -> Heino", "auto -> auot" false hints)
+          showLemmaInternalLink(null);
         }
 
-        if (!declHTML && !defsEN.length && !defsRUenh.length) {
+        if (!chosenHTML && !defsEN.length && !defsRUenh.length) {
           STATUS.innerHTML = 'Ничего не найдено. Возможно, нет финского раздела или страницы.';
         } else {
           STATUS.innerHTML = '';
@@ -380,20 +374,19 @@
       }
     }
 
-    // Search form
     document.getElementById('searchForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const q = document.getElementById('termInput').value.trim();
       if (q) run(q);
     });
 
-    // Example button
     document.getElementById('exampleBtn').addEventListener('click', () => {
-      document.getElementById('termInput').value = 'puuroa';
-      run('puuroa');
+      const examples = ['puuroa','saan','olemme','saada','tuoda','hieno','auto'];
+      const pick = examples[Math.floor(Math.random()*examples.length)];
+      document.getElementById('termInput').value = pick;
+      run(pick);
     });
 
-    // Lemma internal link click -> replace input and search inside app
     $('lemmaEN').addEventListener('click', (e) => {
       const a = e.target.closest('a[data-lemma]');
       if (!a) return;
@@ -403,7 +396,6 @@
       run(word);
     });
 
-    // URL ?q=
     const params = new URLSearchParams(location.search);
     const qParam = params.get('q');
     if (qParam) {
