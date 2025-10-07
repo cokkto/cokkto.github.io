@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Wiktionary Declension + RU/EN Meaning</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root { --gap: 14px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; line-height: 1.45; }
+    h1 { font-size: 20px; margin: 0 0 12px; }
+    form { display: flex; gap: 8px; margin: 0 0 16px; }
+    input[type="text"] { flex: 1; padding: 10px 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; }
+    button { padding: 10px 14px; font-size: 15px; border: 0; border-radius: 8px; cursor: pointer; }
+    button[type="submit"] { background: #222; color: white; }
+    button.secondary { background: #f2f2f2; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: var(--gap); }
+    @media (min-width: 920px) { .grid { grid-template-columns: 1.2fr 1fr; } }
+    .card { border: 1px solid #e6e6e6; border-radius: 12px; padding: 14px; background: #fff; }
+    .muted { color: #666; font-size: 13px; }
+    .error { color: #b00020; white-space: pre-wrap; }
+    .results h2 { font-size: 16px; margin: 0 0 10px; }
+    .source { font-size: 12px; color: #666; margin-top: 10px; }
+    details { border: 1px dashed #ddd; border-radius: 10px; padding: 10px; }
+    details summary { cursor: pointer; }
+    .declension :is(table, .NavFrame, .inflection-table) { width: 100%; }
+    .loading { opacity: .6; }
+    .small { font-size: 12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .lemma { margin: 6px 0 14px; font-size: 14px; }
+    .lemma a { text-decoration: none; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid #ddd; margin-left: 6px; font-size: 12px; color: #444; }
+    .gray { color: #777; }
+    .ru-def-list { padding-left: 18px; margin: 0; }
+    .ru-def-list li { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <h1>Wiktionary: склонение + значения (RU/EN)</h1>
+
+  <form id="searchForm">
+    <input id="termInput" type="text" placeholder="Введите слово (напр. puuro / puuroa)" required />
+    <button type="submit">Искать</button>
+    <button id="exampleBtn" type="button" class="secondary">пример</button>
+  </form>
+
+  <div id="status" class="muted"></div>
+  <div id="lemmaEN" class="lemma"></div>
+
+  <div class="grid">
+    <div class="card results">
+      <h2>Declension (склонение)</h2>
+      <div id="declension" class="declension muted">Нет данных.</div>
+      <div class="source" id="declensionSrc"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card results">
+        <h2>Значение (рус.)</h2>
+        <div id="meaningRU" class="muted">Нет данных.</div>
+        <div class="source" id="ruSrc"></div>
+      </div>
+      <div class="card results">
+        <h2>Meaning (en.)</h2>
+        <div id="meaningEN" class="muted">No data.</div>
+        <div class="source" id="enSrc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>Настройки / хелпы</summary>
+      <p class="small">• Работает через MediaWiki API (CORS <span class="mono">origin=*</span>, без ключей).<br>
+      • Ищет раздел <em>Finnish → Declension</em> (enwiktionary) и <em>Финский → Склонение</em> (ruwiktionary).<br>
+      • Значения: ru-вариант очищается — ключевое слово в <strong>&lt;strong&gt;</strong>, остальное серым (<span class="gray">тех. метки, примечания</span>).<br>
+      • Если введена форма (напр. <span class="mono">puuroa</span>), покажет внутреннюю подсказку «возможно это слово …?» и при клике выполнит поиск по лемме внутри приложения.<br>
+      • Похожие сервисы: <a target="_blank" rel="noreferrer" href="https://wikidict.github.io/">Wikidict</a>, <a target="_blank" rel="noreferrer" href="https://cooljugator.com/fi">Cooljugator (fi)</a>.</p>
+    </details>
+  </div>
+
+  <script>
+    const EN_API = 'https://en.wiktionary.org/w/api.php?origin=*';
+    const RU_API = 'https://ru.wiktionary.org/w/api.php?origin=*';
+    const WIKI_EN_PAGE = (t) => `https://en.wiktionary.org/wiki/${encodeURIComponent(t)}`;
+    const WIKI_RU_PAGE = (t) => `https://ru.wiktionary.org/wiki/${encodeURIComponent(t)}`;
+
+    const POS_HEADERS_EN = new Set(['Noun','Verb','Adjective','Adverb','Pronoun','Proper noun','Numeral','Conjunction','Interjection','Postposition','Preposition','Particle','Suffix','Prefix','Letter','Symbol']);
+    const STATUS = document.getElementById('status');
+    const $ = (id) => document.getElementById(id);
+
+    function htmlToNode(html) {
+      const t = document.createElement('template');
+      t.innerHTML = html.trim();
+      return t.content;
+    }
+
+    function pickLangBlockSections(sections, langName) {
+      const langIdx = sections.findIndex(s => (s.level === '2' || s.toclevel === 1 || s.level === 2) && s.line === langName);
+      if (langIdx === -1) return null;
+      let endIdx = sections.length;
+      for (let i = langIdx + 1; i < sections.length; i++) {
+        const s = sections[i];
+        if ((s.level === '2' || s.toclevel === 1 || s.level === 2) && /^[A-ZА-Я].*/.test(s.line)) { endIdx = i; break; }
+      }
+      return { start: langIdx, end: endIdx, indexOf: (title) => {
+        for (let i = langIdx + 1; i < endIdx; i++) {
+          if (sections[i].line === title) return sections[i];
+        }
+        return null;
+      }};
+    }
+
+    async function mwParsePageSections(api, title) {
+      const url = `${api}&action=parse&page=${encodeURIComponent(title)}&prop=sections&format=json`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+      const j = await r.json();
+      if (!j.parse) return { sections: [] };
+      const sections = (j.parse.sections || []).map(s => ({...s, toclevel: Number(s.toclevel), level: s.level }));
+      return { sections };
+    }
+
+    async function mwParseSectionHTML(api, title, sectionIndex) {
+      const url = `${api}&action=parse&page=${encodeURIComponent(title)}&prop=text&section=${encodeURIComponent(sectionIndex)}&disableeditsection=1&formatversion=2&format=json`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+      const j = await r.json();
+      return j.parse ? j.parse.text : '';
+    }
+
+    async function mwGetLangLinkToRU(title) {
+      const url = `${EN_API}&action=query&prop=langlinks&lllang=ru&titles=${encodeURIComponent(title)}&format=json`;
+      const r = await fetch(url);
+      const j = await r.json();
+      const pages = j.query && j.query.pages ? Object.values(j.query.pages) : [];
+      const ll = pages[0]?.langlinks?.[0]?.['*'];
+      return ll || null;
+    }
+
+    async function mwNormalizeTitle(api, title) {
+      const url = `${api}&action=query&titles=${encodeURIComponent(title)}&format=json`;
+      const r = await fetch(url);
+      const j = await r.json();
+      const pages = j.query && j.query.pages ? Object.values(j.query.pages) : [];
+      if (!pages.length) return title;
+      const pg = pages[0];
+      if (pg.title) return pg.title;
+      return title;
+    }
+
+    function extractFirstDefinitionsFromENFinnish(htmlFinnishBlock, limit=3) {
+      const root = htmlToNode(htmlFinnishBlock);
+      const headlines = [...root.querySelectorAll('h3 .mw-headline')];
+      let posHeader = headlines.find(h => POS_HEADERS_EN.has(h.textContent.trim()));
+      if (!posHeader) {
+        const firstOl = root.querySelector('ol');
+        if (!firstOl) return [];
+        return [...firstOl.querySelectorAll(':scope > li')].slice(0, limit).map(li => li.textContent.trim());
+      }
+      let ol = posHeader.parentElement.nextElementSibling;
+      while (ol && ol.tagName !== 'OL') ol = ol.nextElementSibling;
+      if (!ol) return [];
+      const items = [...ol.querySelectorAll(':scope > li')].slice(0, limit).map(li => li.textContent.trim());
+      return items;
+    }
+
+    // --- RU "Значение": выделяем ключевое слово жирным, остальное серым
+    function extractRU_ZnachenieEnhanced(htmlRuLangBlock, limit=5) {
+      const root = htmlToNode(htmlRuLangBlock);
+      const zHdr = [...root.querySelectorAll('.mw-headline')].find(n => n.textContent.trim() === 'Значение');
+      let ol = null;
+      if (zHdr) {
+        ol = zHdr.parentElement.nextElementSibling;
+        while (ol && ol.tagName !== 'OL') ol = ol.nextElementSibling;
+      } else {
+        ol = root.querySelector('ol');
+      }
+      if (!ol) return [];
+      const items = [...ol.querySelectorAll(':scope > li')].slice(0, limit).map(li => {
+        const raw = li.textContent.replace(/\s+/g,' ').trim();
+
+        // cut off examples/notes starting with ◆
+        const noDiamond = raw.split('◆')[0].trim();
+
+        // remove obvious "(см. ...)" notes
+        const noSee = noDiamond.replace(/\s*[\(\[]\s*см\.[^\)\]]*[\)\]]/gi, '').trim();
+
+        // split leading labels like "гастрон.", "разг.", "устар." etc.
+        const labelMatch = noSee.match(/^((?:[A-Za-zА-Яа-яЁё\-]+\.\s*)+)(.*)$/u);
+        const labels = labelMatch ? labelMatch[1].trim() : '';
+        const afterLabels = (labelMatch ? labelMatch[2] : noSee).trim();
+
+        // main meaning: take up to first "." or ";" or ":" or " — "
+        const core = (afterLabels.split(/(?: — |[.;:])/)[0] || afterLabels).trim();
+
+        // tail after core (the explanations)
+        const idx = afterLabels.indexOf(core);
+        const tail = idx >= 0 ? afterLabels.slice(idx + core.length).trim() : '';
+
+        const grayParts = [];
+        if (labels) grayParts.push(labels);
+        if (tail) grayParts.push(tail.replace(/^[-—\s]+/, ''));
+
+        const gray = grayParts.join(' ').trim();
+        const html = gray ? `<strong>${escapeHTML(core)}</strong> <span class="gray">${escapeHTML(gray)}</span>`
+                          : `<strong>${escapeHTML(core)}</strong>`;
+        return { html, core };
+      });
+      return items;
+    }
+
+    function extractDeclensionTableFromSectionHTML(sectionHTML) {
+      const root = htmlToNode(sectionHTML);
+      const table = root.querySelector('table') || root.querySelector('.inflection-table') || root.firstElementChild;
+      return table ? table.outerHTML : sectionHTML;
+    }
+
+    // Detect if EN Finnish block is an "inflected-form" page (so we should show a lemma hint)
+    function isInflectedPageENFinnish(htmlFinnishBlock) {
+      const text = htmlToNode(htmlFinnishBlock).textContent.toLowerCase();
+      return /\b(inflection|form|genitive|partitive|illative|elative|inessive|adessive|ablative|allative|plural|singular)\s+of\b/.test(text);
+    }
+
+    // Try to detect lemma (nominative) link on EN Finnish block (for inflected-form pages)
+    function extractLemmaFromENFinnish(htmlFinnishBlock, currentTitle) {
+      const root = htmlToNode(htmlFinnishBlock);
+      const cur = (currentTitle || '').trim().toLowerCase();
+      let cand = [...root.querySelectorAll('a[href*="#Finnish"]')];
+      if (!cand.length) {
+        const firstOl = root.querySelector('ol');
+        if (firstOl) cand = [...firstOl.querySelectorAll('a')];
+      }
+      cand = cand.filter(a => {
+        const href = a.getAttribute('href') || '';
+        if (!href.startsWith('/wiki/')) return false;
+        const page = decodeURIComponent(href.split('/wiki/')[1] || '').split('#')[0].toLowerCase();
+        const text = (a.textContent || '').trim().toLowerCase();
+        return page && page !== cur && text && text !== cur;
+      });
+      if (!cand.length) return null;
+      cand.sort((a,b) => {
+        const af = (a.getAttribute('href')||'').includes('#Finnish') ? 0 : 1;
+        const bf = (b.getAttribute('href')||'').includes('#Finnish') ? 0 : 1;
+        if (af !== bf) return af - bf;
+        return a.textContent.trim().length - b.textContent.trim().length;
+      });
+      const a = cand[0];
+      const page = decodeURIComponent(a.getAttribute('href').split('/wiki/')[1] || '').split('#')[0];
+      const text = a.textContent.trim();
+      return { text, page };
+    }
+
+    async function getENDeclensionAndDefs(title) {
+      const normTitle = await mwNormalizeTitle(EN_API, title);
+      const { sections } = await mwParsePageSections(EN_API, normTitle);
+      const lang = pickLangBlockSections(sections, 'Finnish');
+      if (!lang) return { declensionHTML: '', finnishBlockHTML: '', srcTitle: normTitle };
+      const declSec = lang.indexOf('Declension');
+      let declHTML = '';
+      if (declSec) {
+        declHTML = await mwParseSectionHTML(EN_API, normTitle, declSec.index);
+        declHTML = extractDeclensionTableFromSectionHTML(declHTML);
+      }
+      const finnishSectionIndex = sections[lang.start].index;
+      const finHTML = await mwParseSectionHTML(EN_API, normTitle, finnishSectionIndex);
+      return { declensionHTML: declHTML, finnishBlockHTML: finHTML, srcTitle: normTitle };
+    }
+
+    async function getRUSkлонениеAndZnachenie(title) {
+      const normTitle = await mwNormalizeTitle(RU_API, title);
+      const { sections } = await mwParsePageSections(RU_API, normTitle);
+      const lang = pickLangBlockSections(sections, 'Финский');
+      if (!lang) return { declensionHTML: '', ruBlockHTML: '', srcTitle: normTitle };
+      const skl = lang.indexOf('Склонение');
+      let sklHTML = '';
+      if (skl) {
+        sklHTML = await mwParseSectionHTML(RU_API, normTitle, skl.index);
+        sklHTML = extractDeclensionTableFromSectionHTML(sklHTML);
+      }
+      const ruLangIndex = sections[lang.start].index;
+      const ruHTML = await mwParseSectionHTML(RU_API, normTitle, ruLangIndex);
+      return { declensionHTML: sklHTML, ruBlockHTML: ruHTML, srcTitle: normTitle };
+    }
+
+    function setHTML(id, html, emptyText='Нет данных.') {
+      const el = $(id);
+      if (!html) { el.classList.add('muted'); el.innerHTML = emptyText; }
+      else { el.classList.remove('muted'); el.innerHTML = html; }
+    }
+
+    function setListText(id, items, emptyText='—') {
+      const el = $(id);
+      if (!items || !items.length) { el.classList.add('muted'); el.textContent = emptyText; return; }
+      el.classList.remove('muted');
+      const ul = document.createElement('ul');
+      items.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      el.innerHTML = ''; el.appendChild(ul);
+    }
+
+    function setListHTML(id, itemsHTML, emptyText='—') {
+      const el = $(id);
+      if (!itemsHTML || !itemsHTML.length) { el.classList.add('muted'); el.textContent = emptyText; return; }
+      el.classList.remove('muted');
+      const ul = document.createElement('ul');
+      ul.className = 'ru-def-list';
+      itemsHTML.forEach(h => { const li = document.createElement('li'); li.innerHTML = h; ul.appendChild(li); });
+      el.innerHTML = ''; el.appendChild(ul);
+    }
+
+    function showLemmaInternalLink(lemma) {
+      const box = $('lemmaEN');
+      if (!lemma) { box.innerHTML = ''; return; }
+      const safe = escapeHTML(lemma.page);
+      box.innerHTML = `возможно это слово <a href="#" data-lemma="${safe}">${safe}</a>? <span class="pill">#Finnish</span>`;
+    }
+
+    function escapeHTML(s) {
+      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    async function run(query) {
+      STATUS.textContent = 'Загрузка…';
+      document.body.classList.add('loading');
+
+      setHTML('declension','');
+      setListText('meaningEN',[]);
+      setListHTML('meaningRU',[]);
+      $('declensionSrc').textContent = '';
+      $('ruSrc').textContent = '';
+      $('enSrc').textContent = '';
+      $('lemmaEN').innerHTML = '';
+
+      try {
+        const en = await getENDeclensionAndDefs(query);
+
+        // RU part
+        const ruTitle = (await mwGetLangLinkToRU(en.srcTitle)) || query;
+        const ru = await getRUSkлонениеAndZnachenie(ruTitle);
+
+        // Decide declension source
+        const declHTML = en.declensionHTML || ru.declensionHTML || '';
+        setHTML('declension', declHTML || '');
+
+        // EN/RU meanings
+        const defsEN = extractFirstDefinitionsFromENFinnish(en.finnishBlockHTML, 5);
+        const defsRUenh = extractRU_ZnachenieEnhanced(ru.ruBlockHTML, 5);
+
+        setListText('meaningEN', defsEN.length ? defsEN : []);
+        setListHTML('meaningRU', defsRUenh.length ? defsRUenh.map(x => x.html) : []);
+
+        // Sources
+        if (declHTML) {
+          const src = en.declensionHTML ?
+            `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_EN_PAGE(en.srcTitle)}">en.wiktionary.org/wiki/${encodeURIComponent(en.srcTitle)}</a> → Declension` :
+            `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_RU_PAGE(ru.srcTitle)}">ru.wiktionary.org/wiki/${encodeURIComponent(ru.srcTitle)}</a> → Склонение`;
+          $('declensionSrc').innerHTML = src;
+        }
+        $('enSrc').innerHTML = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_EN_PAGE(en.srcTitle)}">en.wiktionary.org/wiki/${encodeURIComponent(en.srcTitle)}</a>`;
+        $('ruSrc').innerHTML = `Источник: <a target="_blank" rel="noreferrer" href="${WIKI_RU_PAGE(ru.srcTitle)}">ru.wiktionary.org/wiki/${encodeURIComponent(ru.srcTitle)}</a>`;
+
+        // Lemma suggestion:
+        // show only if EN page looks like an inflected-form entry AND (to avoid false hints) there is NO EN Declension table
+        if (!en.declensionHTML && isInflectedPageENFinnish(en.finnishBlockHTML)) {
+          const lemma = extractLemmaFromENFinnish(en.finnishBlockHTML, en.srcTitle);
+          showLemmaInternalLink(lemma);
+        } else {
+          showLemmaInternalLink(null); // don't show for nominatives (fixes "hieno -> Heino", "auto -> auot" false hints)
+        }
+
+        if (!declHTML && !defsEN.length && !defsRUenh.length) {
+          STATUS.innerHTML = 'Ничего не найдено. Возможно, нет финского раздела или страницы.';
+        } else {
+          STATUS.innerHTML = '';
+        }
+      } catch (err) {
+        console.error(err);
+        STATUS.innerHTML = `<span class="error">${String(err)}</span>`;
+      } finally {
+        document.body.classList.remove('loading');
+      }
+    }
+
+    // Search form
+    document.getElementById('searchForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = document.getElementById('termInput').value.trim();
+      if (q) run(q);
+    });
+
+    // Example button
+    document.getElementById('exampleBtn').addEventListener('click', () => {
+      document.getElementById('termInput').value = 'puuroa';
+      run('puuroa');
+    });
+
+    // Lemma internal link click -> replace input and search inside app
+    $('lemmaEN').addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-lemma]');
+      if (!a) return;
+      e.preventDefault();
+      const word = a.getAttribute('data-lemma');
+      $('termInput').value = word;
+      run(word);
+    });
+
+    // URL ?q=
+    const params = new URLSearchParams(location.search);
+    const qParam = params.get('q');
+    if (qParam) {
+      $('termInput').value = qParam;
+      run(qParam);
+    }
+  </script>
+</body>
+</html>
