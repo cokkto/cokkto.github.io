@@ -23,7 +23,7 @@ export function initAudioPlayer(trackList) {
     loadTrack(index);
     player.play();
     isPlaying = true;
-    playBtn.textContent = '⏸';
+    playBtn.innerHTML = '&#9208;&#65038;';
   }
 
   function highlightTrack(index) {
