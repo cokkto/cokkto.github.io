@@ -146,8 +146,8 @@
       });
     </script>
 
-    <script type="module">
-      import { initAudioPlayer } from "./javascripts/audioplayer.js";
+    <script src="javascripts/audioplayer.js"></script>
+    <script>
       const trackList = [
         "02 - 01 - Chiaroscuro (Light and shadow)",
         "02 - 02 - Fruntimmersveckan (Women's day)",
@@ -158,8 +158,10 @@
         "02 - 07 - The c-romance",
         "02 - 08 - Linnut liitelee ilman"
       ];
-      initAudioPlayer(trackList, "zerone-be-side");
-    </script>
 
+      initAudioPlayer(trackList, "zerone-be-side");
+      document.getElementById("year").textContent =
+        new Date().getFullYear().toString();
+    </script>
   </body>
 </html>

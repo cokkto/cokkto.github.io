@@ -150,8 +150,8 @@
       });
     </script>
 
-    <script type="module">
-      import { initAudioPlayer } from "./javascripts/audioplayer.js";
+    <script src="javascripts/audioplayer.js"></script>
+    <script>
       const trackList = [
         "01 - 01 - Fading Horizons",
         "01 - 02 - Mirages of Light",
@@ -162,8 +162,10 @@
         "01 - 07 - Snow walk",
         "01 - 08 - Spring goes to Hel"
       ];
-      initAudioPlayer(trackList, "zerone");
-    </script>
 
+      initAudioPlayer(trackList, "zerone");
+      document.getElementById("year").textContent =
+        new Date().getFullYear().toString();
+    </script>
   </body>
 </html>
