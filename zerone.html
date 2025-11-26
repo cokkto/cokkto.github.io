@@ -5,172 +5,120 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>Zerone · cocteau.name</title>
-
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
+
   <body class="h-full bg-slate-950 text-slate-100 antialiased">
     <div class="min-h-screen flex flex-col">
-      <!-- Sticky header -->
-      <header
-        class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
-      >
-        <div
-          class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between"
-        >
+
+      <!-- HEADER -->
+      <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+
           <div class="flex items-center gap-3">
             <a href="./index.html" class="flex items-center gap-3">
-              <div
-                class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold tracking-tight"
-              >
-                C
-              </div>
+              <div class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold tracking-tight">C</div>
               <div class="flex flex-col">
-                <span class="text-base font-semibold tracking-tight"
-                  >cocteau.name</span
-                >
+                <span class="text-base font-semibold tracking-tight">cocteau.name</span>
                 <span class="text-xs text-slate-400">Zerone</span>
               </div>
             </a>
           </div>
 
-          <nav class="flex items-center gap-4 text-sm">
-            <a
-              href="./index.html#music"
-              class="hidden sm:inline-flex text-slate-300 hover:text-slate-50 transition-colors"
-              >Back to albums</a
-            >
-            <a
-              href="https://linkedin.com/in/cocteau"
-              class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-            >
-              <span class="i">in</span>
-              <span>LinkedIn</span>
+          <!-- DESKTOP NAV -->
+          <nav class="hidden sm:flex items-center gap-4 text-sm">
+            <a href="./index.html#music" class="text-slate-300 hover:text-slate-50 transition-colors">Music</a>
+            <a href="https://linkedin.com/in/cocteau"
+               class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 hover:border-slate-500 transition-colors">
+               <span class="i">in</span><span>LinkedIn</span>
             </a>
+          </nav>
+
+          <!-- MOBILE NAV BUTTON -->
+          <div class="flex items-center gap-2 sm:hidden">
+            <a href="https://linkedin.com/in/cocteau"
+               class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 hover:border-slate-500 transition-colors">
+               <span class="i">in</span><span>LinkedIn</span>
+            </a>
+            <button id="menu-toggle"
+              class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 hover:bg-slate-800 hover:border-slate-500 transition-colors">
+              <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                   class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+              <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                   class="h-5 w-5 hidden" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M6 6l12 12M6 18L18 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- MOBILE MENU -->
+        <div id="mobile-menu" class="sm:hidden hidden border-t border-slate-800 bg-slate-950/95">
+          <nav class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
+            <a href="./index.html#music" class="py-1 text-slate-200 hover:text-slate-50 transition-colors">Music</a>
           </nav>
         </div>
       </header>
 
+      <!-- MAIN -->
       <main class="flex-1">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-          <section
-            itemscope
-            itemtype="https://schema.org/MusicAlbum"
-            class="space-y-3 mb-8"
-          >
+
+          <!-- ALBUM INFO -->
+          <section class="space-y-3 mb-8">
             <p class="text-sm text-slate-400">
-              <span class="font-semibold text-slate-100" itemprop="name"
-                >Zerone</span
-              >
-              by
-              <span
-                itemprop="byArtist"
-                itemscope
-                itemtype="https://schema.org/Person"
-              >
-                <span class="font-semibold text-slate-100" itemprop="name"
-                  >Aleksi Salo</span
-                >
-              </span>
-              ·
-              <span itemprop="genre">Post-rock</span> ·
-              <span itemprop="datePublished">2025</span>
+              <span class="font-semibold text-slate-100">Zerone</span> by
+              <span class="font-semibold text-slate-100">Aleksi Salo</span> ·
+              <span>Post-rock</span> · <span>2025</span>
             </p>
 
-            <p class="text-sm text-slate-200" itemprop="description">
-              <span class="font-semibold">Zerone</span> is a deeply
-              introspective sonic journey tracing the emotional arc of the
-              Nordic winter season — from autumnal melancholy to the frostbitten
-              edge of spring. Blending post-rock's sweeping instrumental
-              textures with poetic lyricism, orchestral undertones, and
-              folk-inspired storytelling, the album becomes a meditative
-              reflection on solitude, resilience, and resistance to change.
+            <p class="text-sm text-slate-200">
+              <span class="font-semibold">Zerone</span> is a deeply introspective sonic journey...
             </p>
             <p class="text-sm text-slate-200">
-              It moves from the quiet awe of autumn’s descent into winter,
-              through a defiant surge of energy, then collapses into surreal,
-              folkloric fragments. As darkness deepens, sound becomes elemental
-              and meditative, echoing the stillness of Kaamos (polar night). The
-              emerging light of spring brings not peace but disruption, ending
-              in a fierce rejection of renewal — choosing ice over thaw, silence
-              over rebirth.
+              It moves from the quiet awe of autumn...
             </p>
           </section>
 
-          <!-- Audio player -->
-          <section
-            class="audio-player-container flex flex-col gap-6 md:flex-row md:items-start md:gap-8"
-          >
-            <!-- Left / main player -->
-            <div class="left flex-1 flex flex-col items-center w-full">
-              <div
-                class="media w-full max-w-xl flex flex-col items-center bg-slate-900/60 border border-slate-800 rounded-3xl p-4 sm:p-5 shadow-sm"
-              >
-                <img
-                  src="./audio/zerone/zerone.jpg"
-                  alt="Zerone cover"
-                  class="cover w-full rounded-2xl mb-4"
-                  id="cover"
-                />
+          <!-- PLAYER -->
+          <section class="flex flex-col gap-6 md:flex-row md:gap-8">
 
-                <input
-                  type="range"
-                  id="seekbar"
-                  class="seekbar w-full my-3 accent-sky-400"
-                  value="0"
-                  min="0"
-                  max="100"
-                />
+            <!-- LEFT PLAYER -->
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full max-w-xl flex flex-col items-center bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-sm">
 
-                <div
-                  class="controls mt-2 flex items-center justify-center gap-3"
-                >
-                  <button
-                    id="prev"
-                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-                  >
+                <img src="./audio/zerone/zerone.jpg" class="w-full rounded-2xl mb-4" id="cover" />
+
+                <input type="range" id="seekbar" class="w-full my-3 accent-sky-400" min="0" max="100" value="0" />
+
+                <div class="mt-2 flex items-center justify-center gap-3">
+                  <button id="prev"
+                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
                     &#9198;&#65038;
                   </button>
-                  <button
-                    id="play"
-                    class="rounded-full border border-sky-500/80 bg-sky-500/10 px-4 py-1.5 text-sm font-medium text-sky-200 hover:bg-sky-500/20 transition-colors"
-                  >
+                  <button id="play"
+                    class="rounded-full border border-sky-500/80 bg-sky-500/10 px-4 py-1.5 text-sm font-medium text-sky-200 hover:bg-sky-500/20 transition-colors">
                     &#9654;&#65038;
                   </button>
-                  <button
-                    id="next"
-                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-                  >
+                  <button id="next"
+                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
                     &#9197;&#65038;
                   </button>
                 </div>
               </div>
 
-              <!-- Mobile tracklist -->
-              <div
-                class="right mobile mt-6 w-full md:hidden bg-slate-900/40 border border-slate-800 rounded-3xl p-4"
-                id="mobileTracklist"
-              >
-                <ul
-                  class="tracklist flex flex-col gap-1 text-sm"
-                  id="tracklist-mobile"
-                ></ul>
+              <!-- MOBILE TRACKLIST -->
+              <div class="md:hidden mt-6 w-full bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
+                <ul id="tracklist-mobile" class="flex flex-col gap-1 text-sm"></ul>
               </div>
             </div>
 
-            <!-- Desktop tracklist -->
-            <div
-              class="right desktop hidden md:block md:w-[50%] max-h-[70vh] overflow-y-auto bg-slate-900/40 border border-slate-800 rounded-3xl p-4"
-              id="desktopTracklist"
-            >
-              <ul
-                class="tracklist flex flex-col gap-1 text-sm"
-                id="tracklist"
-              ></ul>
+            <!-- DESKTOP TRACKLIST -->
+            <div class="hidden md:block md:w-[50%] max-h-[70vh] overflow-y-auto bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
+              <ul id="tracklist" class="flex flex-col gap-1 text-sm"></ul>
             </div>
 
             <audio id="player"></audio>
@@ -179,23 +127,31 @@
       </main>
 
       <footer class="border-t border-slate-900">
-        <div
-          class="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-xs text-slate-500 flex items-center justify-between gap-2"
-        >
+        <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-slate-500 flex justify-between">
           <span>© <span id="year"></span> cocteau.name</span>
-          <a
-            href="./index.html"
-            class="text-slate-400 hover:text-slate-200 transition-colors"
-            >Back to index</a
-          >
+          <a href="./index.html" class="hover:text-slate-200 transition-colors">Back to index</a>
         </div>
       </footer>
     </div>
 
-    <script src="javascripts/scale.fix.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const menuToggle = document.getElementById("menu-toggle");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const iconOpen = document.getElementById("menu-icon-open");
+      const iconClose = document.getElementById("menu-icon-close");
+
+      menuToggle.addEventListener("click", () => {
+        const isHidden = mobileMenu.classList.contains("hidden");
+        mobileMenu.classList.toggle("hidden");
+        iconOpen.classList.toggle("hidden", isHidden);
+        iconClose.classList.toggle("hidden", !isHidden);
+      });
+    </script>
+
     <script type="module">
       import { initAudioPlayer } from "./javascripts/audioplayer.js";
-
       const trackList = [
         "01 - 01 - Fading Horizons",
         "01 - 02 - Mirages of Light",
@@ -206,12 +162,8 @@
         "01 - 07 - Snow walk",
         "01 - 08 - Spring goes to Hel"
       ];
+      initAudioPlayer(trackList, "zerone");
+    </script>
 
-      initAudioPlayer(trackList);
-    </script>
-    <script>
-      document.getElementById("year").textContent =
-        new Date().getFullYear().toString();
-    </script>
   </body>
 </html>
