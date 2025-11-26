@@ -1,269 +1,228 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <title>cocteau.name</title>
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <title>cocteau.name</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="h-full bg-slate-950 text-slate-100 antialiased">
-    <div class="min-h-screen flex flex-col">
-      <!-- Sticky header -->
-      <header
-        class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
-      >
-        <div
-          class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between"
-        >
-          <div class="flex items-center gap-3">
-            <!-- Logo -->
-            <a href="./index.html" class="flex items-center gap-3">
-              <div
-                class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold tracking-tight"
-              >
-                C
-              </div>
-              <div class="flex flex-col">
-                <span class="text-base font-semibold tracking-tight"
-                  >cocteau.name</span
-                >
-                <span class="text-xs text-slate-400">music & code</span>
-              </div>
-            </a>
-          </div>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-          <!-- Desktop nav -->
-          <nav
-            class="hidden sm:flex items-center gap-4 text-sm"
-            aria-label="Main"
-          >
-            <a
-              href="#music"
-              class="text-slate-300 hover:text-slate-50 transition-colors"
-              >Music</a
-            >
-            <a
-              href="https://linkedin.com/in/cocteau"
-              class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-            >
-              <span class="i">in</span>
-              <span>LinkedIn</span>
-            </a>
-          </nav>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-          <!-- Mobile actions -->
-          <div class="flex items-center gap-2 sm:hidden">
-            <a
-              href="https://linkedin.com/in/cocteau"
-              class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-            >
-              <span class="i">in</span>
-              <span>LinkedIn</span>
-            </a>
-            <button
-              id="menu-toggle"
-              class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-              aria-label="Toggle navigation"
-            >
-              <svg
-                id="menu-icon-open"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <svg
-                id="menu-icon-close"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="h-5 w-5 hidden"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M6 6l12 12M6 18L18 6" />
-              </svg>
-            </button>
-          </div>
-        </div>
+  <!-- META -->
+  <meta name="description"
+    content="I’m a Nordic-grown full-stack developer writing code, instrumental stories, slow indie pieces and the occasional book between debugging sessions." />
+  <meta name="author" content="Aleksi Salo" />
+  <meta name="keywords"
+    content="Aleksi Salo, cocteau, cocteau.name, full-stack developer, Nordic, Finland, music, instrumental, post-rock, indie, writing" />
 
-        <!-- Mobile menu -->
-        <div
-          id="mobile-menu"
-          class="sm:hidden hidden border-t border-slate-800 bg-slate-950/95"
-        >
-          <nav
-            class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-col gap-2 text-sm"
-            aria-label="Mobile"
-          >
-            <a
-              href="#music"
-              class="py-1 text-slate-200 hover:text-slate-50 transition-colors"
-              >Music</a
-            >
-          </nav>
-        </div>
-      </header>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="cocteau.name" />
+  <meta property="og:title" content="cocteau.name · Aleksi Salo" />
+  <meta property="og:description"
+    content="Nordic-grown full-stack developer balancing code, instrumental stories, slow indie pieces and the occasional book project." />
+  <meta property="og:url" content="https://cocteau.name/" />
+  <meta property="og:image" content="https://cocteau.name/audio/cocteau.png" />
 
-      <main class="flex-1">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-16">
-          <!-- Author section (reserved) -->
-          <section id="about" class="space-y-4">
-            <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">
-              Aleksi Salo
-            </h1>
-            <p class="text-sm text-slate-400 max-w-2xl">
-              <!-- Reserved for short author's text. Replace this with your own copy. -->
-              Instrumental stories from the north — slowly written between code,
-              coffee and Kaamos.
-            </p>
-          </section>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="cocteau.name · Aleksi Salo" />
+  <meta name="twitter:description"
+    content="Nordic full-stack developer and musician: code, instrumental stories, slow indie pieces and more." />
+  <meta name="twitter:image" content="https://cocteau.name/audio/cocteau.png" />
 
-          <!-- Music section -->
-          <section id="music" class="space-y-6">
-            <div class="flex items-baseline justify-between gap-2">
-              <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">
-                Music
-              </h2>
-            </div>
+</head>
 
+<body class="h-full bg-slate-950 text-slate-100 antialiased">
+  <div class="min-h-screen flex flex-col">
+    <!-- Sticky header -->
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <!-- Logo -->
+          <a href="./index.html" class="flex items-center gap-3">
             <div
-              class="grid gap-6 sm:gap-8 sm:grid-cols-2 auto-rows-fr items-stretch"
-            >
-              <!-- Zerone card -->
-              <article
-                class="group flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 shadow-sm"
-              >
-                <div class="relative">
-                  <img
-                    src="./audio/zerone/zerone.jpg"
-                    alt="Zerone cover"
-                    class="h-48 w-full object-cover"
-                  />
-                  <div
-                    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent"
-                  ></div>
-                </div>
-                <div class="flex flex-1 flex-col gap-3 p-4 sm:p-5">
-                  <header class="space-y-1">
-                    <h3
-                      class="text-lg font-semibold tracking-tight text-slate-50"
-                    >
-                      Zerone
-                    </h3>
-                    <p class="text-xs text-slate-400">
-                      Post-rock · 2025 · 8 tracks
-                    </p>
-                  </header>
-                  <p class="text-sm text-slate-300 line-clamp-3">
-                    A winter-long arc from autumn light to the frostbitten edge
-                    of spring — guitars, slow crescendos and quiet resistance
-                    to change.
-                  </p>
-                  <div class="mt-auto pt-2">
-                    <a
-                      href="./zerone.html"
-                      class="inline-flex items-center justify-center rounded-full border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-                    >
-                      Open player
-                    </a>
-                  </div>
-                </div>
-              </article>
-
-              <!-- Zerone: Be-side card -->
-              <article
-                class="group flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 shadow-sm"
-              >
-                <div class="relative">
-                  <img
-                    src="./audio/zerone-be-side/zerone-be-side.jpg"
-                    alt="Zerone: Be-side cover"
-                    class="h-48 w-full object-cover"
-                  />
-                  <div
-                    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent"
-                  ></div>
-                </div>
-                <div class="flex flex-1 flex-col gap-3 p-4 sm:px-5 sm:pb-5 sm:pt-4">
-                  <header class="space-y-1">
-                    <h3
-                      class="text-lg font-semibold tracking-tight text-slate-50"
-                    >
-                      Zerone: Be-side
-                    </h3>
-                    <p class="text-xs text-slate-400">
-                      Post-rock / alt · 8 tracks
-                    </p>
-                  </header>
-                  <p class="text-sm text-slate-300 line-clamp-3">
-                    Companion pieces, experiments and alternate moods orbiting
-                    the main Zerone cycle — quieter corners, side quests and
-                    crooked reflections.
-                  </p>
-                  <div class="mt-auto pt-2">
-                    <a
-                      href="./zerone-be-side.html"
-                      class="inline-flex items-center justify-center rounded-full border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
-                    >
-                      Open player
-                    </a>
-                  </div>
-                </div>
-              </article>
+              class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold tracking-tight">
+              C
             </div>
-          </section>
+            <div class="flex flex-col">
+              <span class="text-base font-semibold tracking-tight">cocteau.name</span>
+              <span class="text-xs text-slate-400">music & code</span>
+            </div>
+          </a>
         </div>
-      </main>
 
-      <footer class="border-t border-slate-900">
-        <div
-          class="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-xs text-slate-500 flex items-center justify-between gap-2"
-        >
-          <span>© <span id="year"></span> cocteau.name</span>
-          <span class="hidden sm:inline">Made in the Nordics.</span>
+        <!-- Desktop nav -->
+        <nav class="hidden sm:flex items-center gap-4 text-sm" aria-label="Main">
+          <a href="#music" class="text-slate-300 hover:text-slate-50 transition-colors">Music</a>
+          <a href="https://linkedin.com/in/cocteau"
+            class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors">
+            <span class="i">in</span>
+            <span>LinkedIn</span>
+          </a>
+        </nav>
+
+        <!-- Mobile actions -->
+        <div class="flex items-center gap-2 sm:hidden">
+          <a href="https://linkedin.com/in/cocteau"
+            class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors">
+            <span class="i">in</span>
+            <span>LinkedIn</span>
+          </a>
+          <button id="menu-toggle"
+            class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors"
+            aria-label="Toggle navigation">
+            <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5 hidden"
+              fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6l12 12M6 18L18 6" />
+            </svg>
+          </button>
         </div>
-      </footer>
-    </div>
+      </div>
 
-    <script>
-      document.getElementById("year").textContent =
-        new Date().getFullYear().toString();
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="sm:hidden hidden border-t border-slate-800 bg-slate-950/95">
+        <nav class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-col gap-2 text-sm" aria-label="Mobile">
+          <a href="#music" class="py-1 text-slate-200 hover:text-slate-50 transition-colors">Music</a>
+        </nav>
+      </div>
+    </header>
 
-      const menuToggle = document.getElementById("menu-toggle");
-      const mobileMenu = document.getElementById("mobile-menu");
-      const iconOpen = document.getElementById("menu-icon-open");
-      const iconClose = document.getElementById("menu-icon-close");
+    <main class="flex-1">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-16">
+        <!-- Author section (reserved) -->
+        <section id="about" class="space-y-4">
+          <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">
+            Aleksi Salo
+          </h1>
+          <p class="text-sm text-slate-200">
+            I’m a Nordic-grown full-stack developer who spends half his time writing code and the other half pretending
+            it’s still reasonable to juggle music, lyrics, and the occasional book project. When I’m not debugging
+            something (technical or existential), I write instrumental stories, slow indie pieces, and other things that
+            usually take more tea than talent.
+          </p>
 
-      if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener("click", () => {
-          const isHidden = mobileMenu.classList.contains("hidden");
-          if (isHidden) {
-            mobileMenu.classList.remove("hidden");
-            iconOpen.classList.add("hidden");
-            iconClose.classList.remove("hidden");
-          } else {
-            mobileMenu.classList.add("hidden");
-            iconOpen.classList.remove("hidden");
-            iconClose.classList.add("hidden");
-          }
-        });
-      }
-    </script>
-  </body>
+        </section>
+
+        <!-- Music section -->
+        <section id="music" class="space-y-6">
+          <div class="flex items-baseline justify-between gap-2">
+            <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">
+              Music
+            </h2>
+          </div>
+
+          <p class="text-sm text-slate-400 max-w-2xl">
+            <!-- Reserved for short author's text. Replace this with your own copy. -->
+            Instrumental stories from the north — slowly written between code,
+            tea and Kaamos.
+          </p>
+
+          <div class="grid gap-6 sm:gap-8 sm:grid-cols-2 auto-rows-fr items-stretch">
+            <!-- Zerone card -->
+            <article
+              class="group flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 shadow-sm">
+              <div class="relative">
+                <img src="./audio/zerone/zerone.jpg" alt="Zerone cover" class="h-48 w-full object-cover" />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent">
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                <header class="space-y-1">
+                  <h3 class="text-lg font-semibold tracking-tight text-slate-50">
+                    Zerone
+                  </h3>
+                  <p class="text-xs text-slate-400">
+                    Post-rock · 2025 · 8 tracks
+                  </p>
+                </header>
+                <p class="text-sm text-slate-300 line-clamp-3">
+                  A winter-long arc from autumn light to the frostbitten edge
+                  of spring — guitars, slow crescendos and quiet resistance
+                  to change.
+                </p>
+                <div class="mt-auto pt-2">
+                  <a href="./zerone.html"
+                    class="inline-flex items-center justify-center rounded-full border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors">
+                    Open player
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Zerone: Be-side card -->
+            <article
+              class="group flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 shadow-sm">
+              <div class="relative">
+                <img src="./audio/zerone-be-side/zerone-be-side.jpg" alt="Zerone: Be-side cover"
+                  class="h-48 w-full object-cover" />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent">
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-3 p-4 sm:px-5 sm:pb-5 sm:pt-4">
+                <header class="space-y-1">
+                  <h3 class="text-lg font-semibold tracking-tight text-slate-50">
+                    Zerone: Be-side
+                  </h3>
+                  <p class="text-xs text-slate-400">
+                    Post-rock / alt · 8 tracks
+                  </p>
+                </header>
+                <p class="text-sm text-slate-300 line-clamp-3">
+                  Companion pieces, experiments and alternate moods orbiting
+                  the main Zerone cycle — quieter corners, side quests and
+                  crooked reflections.
+                </p>
+                <div class="mt-auto pt-2">
+                  <a href="./zerone-be-side.html"
+                    class="inline-flex items-center justify-center rounded-full border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-800 hover:border-slate-500 transition-colors">
+                    Open player
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="border-t border-slate-900">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-xs text-slate-500 flex items-center justify-between gap-2">
+        <span>© <span id="year"></span> cocteau.name</span>
+        <span class="hidden sm:inline">Made in the Nordics.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent =
+      new Date().getFullYear().toString();
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const iconOpen = document.getElementById("menu-icon-open");
+    const iconClose = document.getElementById("menu-icon-close");
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener("click", () => {
+        const isHidden = mobileMenu.classList.contains("hidden");
+        if (isHidden) {
+          mobileMenu.classList.remove("hidden");
+          iconOpen.classList.add("hidden");
+          iconClose.classList.remove("hidden");
+        } else {
+          mobileMenu.classList.add("hidden");
+          iconOpen.classList.remove("hidden");
+          iconClose.classList.add("hidden");
+        }
+      });
+    }
+  </script>
+</body>
+
 </html>
