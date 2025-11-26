@@ -1,167 +1,188 @@
 <!-- zerone-be-side.html -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <title>Zerone: Be-side · cocteau.name</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
 
-  <body class="h-full bg-slate-950 text-slate-100 antialiased">
-    <div class="min-h-screen flex flex-col">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <title>Zerone: Be-side · cocteau.name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-      <!-- HEADER -->
-      <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+<body class="h-full bg-slate-950 text-slate-100 antialiased">
+  <div class="min-h-screen flex flex-col">
 
-          <div class="flex items-center gap-3">
-            <a href="./index.html" class="flex items-center gap-3">
-              <div class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold">C</div>
-              <div class="flex flex-col">
-                <span class="text-base font-semibold tracking-tight">cocteau.name</span>
-                <span class="text-xs text-slate-400">Zerone: Be-side</span>
-              </div>
-            </a>
-          </div>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
 
-          <!-- DESKTOP NAV -->
-          <nav class="hidden sm:flex items-center gap-4 text-sm">
-            <a href="./index.html#music" class="text-slate-300 hover:text-slate-50 transition-colors">Music</a>
-            <a href="https://linkedin.com/in/cocteau"
-               class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 hover:border-slate-500 transition-colors">
-               <span class="i">in</span><span>LinkedIn</span>
-            </a>
-          </nav>
-
-          <!-- MOBILE BUTTON -->
-          <div class="flex items-center gap-2 sm:hidden">
-            <a href="https://linkedin.com/in/cocteau"
-               class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 transition-colors">
-               <span class="i">in</span><span>LinkedIn</span>
-            </a>
-            <button id="menu-toggle"
-              class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 hover:bg-slate-800 transition-colors">
-              <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                   stroke="currentColor" stroke-width="1.5">
-                <path d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-              <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
-                   stroke="currentColor" stroke-width="1.5">
-                <path d="M6 6l12 12M6 18L18 6"/>
-              </svg>
-            </button>
-          </div>
+        <div class="flex items-center gap-3">
+          <a href="./index.html" class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm font-semibold">C</div>
+            <div class="flex flex-col">
+              <span class="text-base font-semibold tracking-tight">cocteau.name</span>
+              <span class="text-xs text-slate-400">Zerone: Be-side</span>
+            </div>
+          </a>
         </div>
 
-        <!-- MOBILE MENU -->
-        <div id="mobile-menu" class="sm:hidden hidden border-t border-slate-800 bg-slate-950/95">
-          <nav class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
-            <a href="./index.html#music" class="py-1 text-slate-200 hover:text-slate-50 transition-colors">Music</a>
-          </nav>
+        <!-- DESKTOP NAV -->
+        <nav class="hidden sm:flex items-center gap-4 text-sm">
+          <a href="./index.html#music" class="text-slate-300 hover:text-slate-50 transition-colors">Music</a>
+          <a href="https://linkedin.com/in/cocteau"
+            class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 hover:border-slate-500 transition-colors">
+            <span class="i">in</span><span>LinkedIn</span>
+          </a>
+        </nav>
+
+        <!-- MOBILE BUTTON -->
+        <div class="flex items-center gap-2 sm:hidden">
+          <a href="https://linkedin.com/in/cocteau"
+            class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-xs font-medium hover:bg-slate-800 transition-colors">
+            <span class="i">in</span><span>LinkedIn</span>
+          </a>
+          <button id="menu-toggle"
+            class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 hover:bg-slate-800 transition-colors">
+            <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+              stroke="currentColor" stroke-width="1.5">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
+              stroke="currentColor" stroke-width="1.5">
+              <path d="M6 6l12 12M6 18L18 6" />
+            </svg>
+          </button>
         </div>
-      </header>
+      </div>
 
-      <!-- MAIN -->
-      <main class="flex-1">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <!-- MOBILE MENU -->
+      <div id="mobile-menu" class="sm:hidden hidden border-t border-slate-800 bg-slate-950/95">
+        <nav class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
+          <a href="./index.html#music" class="py-1 text-slate-200 hover:text-slate-50 transition-colors">Music</a>
+        </nav>
+      </div>
+    </header>
 
-          <!-- ALBUM INFO -->
-          <section class="space-y-3 mb-8">
-            <p class="text-sm text-slate-400">
-              <span class="font-semibold text-slate-100">Zerone: Be-side</span> by
-              <span class="font-semibold text-slate-100">Aleksi Salo</span>
-            </p>
-            <p class="text-sm text-slate-200">
-              Companion album to Zerone...
-            </p>
-          </section>
+    <!-- MAIN -->
+    <main class="flex-1">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
-          <!-- PLAYER -->
-          <section class="flex flex-col gap-6 md:flex-row md:gap-8">
+        <!-- ALBUM INFO -->
+        <section class="space-y-3 mb-8">
+          <p class="text-sm text-slate-400">
+            <span class="font-semibold text-slate-100">Zerone: Be-side</span> by
+            <span class="font-semibold text-slate-100">Aleksi Salo</span>
+          </p>
+          <p class="text-sm text-slate-200">
+            <span class="font-semibold"> Zerone: Be-side</span> blends melancholic indie rock, dream-tinged post-metal,
+            and quiet folk minimalism into a single drifting narrative. Clean arpeggiated guitars, deep synthetic bass,
+            soft piano, and spacious drums create a reflective, slow-moving soundscape, while the vocals stay breathy
+            and unornamented. A second singer appears only at the ends of quatrains, creating overlapping echoes that
+            feel like memories stepping on their own shadows. The production is clear and restrained, balancing
+            distorted post-rock textures with intimate acoustic details.
+          </p>
+          <p class="text-sm text-slate-200">
+            Lyrically, the album wanders through salt deserts, subway tunnels, vanished seas, thistle fields, and fading
+            summers. Repeated symbols—lighthouses, trains, masks, counting-rhyme refrains—form a loose, dreamlike
+            journey where the narrator keeps walking through places that no longer fully recognize her. The Finnish
+            refrains and children’s-chant choruses add a folkloric cadence, grounding the surrealism in something
+            lived-in.
+          </p>
+          <p class="text-sm text-slate-200">
+            The result is a quietly devastating record: immersive, slow, and unhurried, more erosion than climax. Six
+            Names for the Rain never forces emotion—it lets it seep, overlap, and return like an echo carried by
+            weather.
+          </p>
+        </section>
 
-            <!-- LEFT -->
-            <div class="flex-1 flex flex-col items-center">
-              <div class="w-full max-w-xl flex flex-col items-center bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-sm">
+        <!-- PLAYER -->
+        <section class="flex flex-col gap-6 md:flex-row md:gap-8">
 
-                <img src="./audio/zerone-be-side/zerone-be-side.jpg" class="w-full rounded-2xl mb-4" id="cover"/>
+          <!-- LEFT -->
+          <div class="flex-1 flex flex-col items-center">
+            <div
+              class="w-full max-w-xl flex flex-col items-center bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-sm">
 
-                <input type="range" id="seekbar" class="w-full my-3 accent-sky-400" min="0" max="100" value="0" />
+              <img src="./audio/zerone-be-side/zerone-be-side.jpg" class="w-full rounded-2xl mb-4" id="cover" />
 
-                <div class="mt-2 flex items-center justify-center gap-3">
-                  <button id="prev"
-                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
-                    &#9198;&#65038;
-                  </button>
-                  <button id="play"
-                    class="rounded-full border border-sky-500/80 bg-sky-500/10 px-4 py-1.5 text-sm font-medium hover:bg-sky-500/20 transition-colors">
-                    &#9654;&#65038;
-                  </button>
-                  <button id="next"
-                    class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
-                    &#9197;&#65038;
-                  </button>
-                </div>
-              </div>
+              <input type="range" id="seekbar" class="w-full my-3 accent-sky-400" min="0" max="100" value="0" />
 
-              <!-- MOBILE LIST -->
-              <div class="md:hidden mt-6 w-full bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
-                <ul id="tracklist-mobile" class="flex flex-col gap-1 text-sm"></ul>
+              <div class="mt-2 flex items-center justify-center gap-3">
+                <button id="prev"
+                  class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
+                  &#9198;&#65038;
+                </button>
+                <button id="play"
+                  class="rounded-full border border-sky-500/80 bg-sky-500/10 px-4 py-1.5 text-sm font-medium hover:bg-sky-500/20 transition-colors">
+                  &#9654;&#65038;
+                </button>
+                <button id="next"
+                  class="rounded-full border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800 transition-colors">
+                  &#9197;&#65038;
+                </button>
               </div>
             </div>
 
-            <!-- DESKTOP LIST -->
-            <div class="hidden md:block md:w-[50%] max-h-[70vh] overflow-y-auto bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
-              <ul id="tracklist" class="flex flex-col gap-1 text-sm"></ul>
+            <!-- MOBILE LIST -->
+            <div class="md:hidden mt-6 w-full bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
+              <ul id="tracklist-mobile" class="flex flex-col gap-1 text-sm"></ul>
             </div>
+          </div>
 
-            <audio id="player"></audio>
-          </section>
-        </div>
-      </main>
+          <!-- DESKTOP LIST -->
+          <div
+            class="hidden md:block md:w-[50%] max-h-[70vh] overflow-y-auto bg-slate-900/40 border border-slate-800 rounded-3xl p-4">
+            <ul id="tracklist" class="flex flex-col gap-1 text-sm"></ul>
+          </div>
 
-      <footer class="border-t border-slate-900">
-        <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-slate-500 flex justify-between">
-          <span>© <span id="year"></span> cocteau.name</span>
-          <a href="./index.html" class="hover:text-slate-200 transition-colors">Back to index</a>
-        </div>
-      </footer>
+          <audio id="player"></audio>
+        </section>
+      </div>
+    </main>
 
-    </div>
+    <footer class="border-t border-slate-900">
+      <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-slate-500 flex justify-between">
+        <span>© <span id="year"></span> cocteau.name</span>
+        <a href="./index.html" class="hover:text-slate-200 transition-colors">Back to index</a>
+      </div>
+    </footer>
 
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
+  </div>
 
-      const menuToggle = document.getElementById("menu-toggle");
-      const mobileMenu = document.getElementById("mobile-menu");
-      const iconOpen = document.getElementById("menu-icon-open");
-      const iconClose = document.getElementById("menu-icon-close");
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-      menuToggle.addEventListener("click", () => {
-        const isHidden = mobileMenu.classList.contains("hidden");
-        mobileMenu.classList.toggle("hidden");
-        iconOpen.classList.toggle("hidden", isHidden);
-        iconClose.classList.toggle("hidden", !isHidden);
-      });
-    </script>
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const iconOpen = document.getElementById("menu-icon-open");
+    const iconClose = document.getElementById("menu-icon-close");
 
-    <script src="javascripts/audioplayer.js"></script>
-    <script>
-      const trackList = [
-        "02 - 01 - Chiaroscuro (Light and shadow)",
-        "02 - 02 - Fruntimmersveckan (Women's day)",
-        "02 - 03 - Oshiya",
-        "02 - 04 - Pradenn",
-        "02 - 05 - Calendar",
-        "02 - 06 - Sargassum",
-        "02 - 07 - The c-romance",
-        "02 - 08 - Linnut liitelee ilman"
-      ];
+    menuToggle.addEventListener("click", () => {
+      const isHidden = mobileMenu.classList.contains("hidden");
+      mobileMenu.classList.toggle("hidden");
+      iconOpen.classList.toggle("hidden", isHidden);
+      iconClose.classList.toggle("hidden", !isHidden);
+    });
+  </script>
 
-      initAudioPlayer(trackList, "zerone-be-side");
-      document.getElementById("year").textContent =
-        new Date().getFullYear().toString();
-    </script>
-  </body>
+  <script src="javascripts/audioplayer.js"></script>
+  <script>
+    const trackList = [
+      "02 - 01 - Chiaroscuro (Light and shadow)",
+      "02 - 02 - Fruntimmersveckan (Women's day)",
+      "02 - 03 - Oshiya",
+      "02 - 04 - Pradenn",
+      "02 - 05 - Calendar",
+      "02 - 06 - Sargassum",
+      "02 - 07 - The c-romance",
+      "02 - 08 - Linnut liitelee ilman"
+    ];
+
+    initAudioPlayer(trackList, "zerone-be-side");
+    document.getElementById("year").textContent =
+      new Date().getFullYear().toString();
+  </script>
+</body>
+
 </html>
