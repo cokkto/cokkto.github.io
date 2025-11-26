@@ -41,11 +41,11 @@ export function initAudioPlayer(trackList) {
     } else if (isPlaying) {
       player.pause();
       isPlaying = false;
-      playBtn.textContent = '▶';
+      playBtn.innerHTML  = '&#9654;&#65038;';
     } else {
       player.play();
       isPlaying = true;
-      playBtn.textContent = '⏸';
+      playBtn.innerHTML  = '&#9209;&#65038;';
     }
   }
 
