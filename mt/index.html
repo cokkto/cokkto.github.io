@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Matikkatreeni</title>
+  <style>
+    :root{
+      --bg:#f6f0f0;
+      --card:#d8d2cf;
+      --ink:#111;
+      --muted:#444;
+      --border:#111;
+      --accent:#111;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    .wrap{
+      max-width:920px;
+      margin:0 auto;
+      padding:24px 18px 32px;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .panel{
+      width:100%;
+      display:none;
+      text-align:center;
+    }
+    .panel.active{display:block}
+
+    .title{
+      font-size:22px;
+      font-weight:600;
+      letter-spacing:.2px;
+      color:var(--muted);
+      margin:0 0 18px;
+    }
+
+    .startBtn{
+      font-size:42px;
+      padding:22px 42px;
+      border:4px solid var(--border);
+      background:#fff;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .startBtn:active{transform:translateY(1px)}
+
+    .toprow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:0 auto 18px;
+      max-width:720px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .timer{
+      font-size:22px;
+      padding:10px 14px;
+      border:2px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      min-width:140px;
+      text-align:left;
+    }
+    .progress{
+      font-size:22px;
+      padding:10px 14px;
+      border:2px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      min-width:140px;
+      text-align:right;
+    }
+
+    .task{
+      font-size:96px;
+      font-weight:800;
+      line-height:1.1;
+      margin:10px 0 26px;
+      user-select:none;
+    }
+
+    .answers{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+      max-width:720px;
+      margin:0 auto 22px;
+    }
+    .ansBtn{
+      height:min(200px, 22vh);
+      border:3px solid var(--border);
+      background:var(--card);
+      font-size:86px;
+      font-weight:800;
+      cursor:pointer;
+      border-radius:6px;
+      user-select:none;
+    }
+    .ansBtn:active{transform:translateY(1px)}
+    .ansBtn[disabled]{opacity:.75; cursor:not-allowed}
+
+    .smallRow{
+      max-width:720px;
+      margin:0 auto;
+      display:flex;
+      justify-content:center;
+    }
+    .resetBtn{
+      font-size:16px;
+      padding:10px 14px;
+      border:2px solid var(--border);
+      background:#fff;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .resetBtn:active{transform:translateY(1px)}
+
+    .scoreBig{
+      font-size:72px;
+      font-weight:900;
+      margin:6px 0 10px;
+    }
+    .badge{
+      display:inline-block;
+      font-size:34px;
+      font-weight:900;
+      padding:12px 18px;
+      border:3px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      margin:8px 0 18px;
+    }
+
+    @media (max-width:520px){
+      .task{font-size:70px}
+      .ansBtn{font-size:64px}
+      .scoreBig{font-size:54px}
+      .badge{font-size:26px}
+      .startBtn{font-size:34px}
+      .toprow{flex-direction:column}
+      .timer,.progress{min-width:100%; text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- VIEW 1: START -->
+    <section id="viewStart" class="panel active" aria-label="Aloitus">
+      <div class="title">Tehtävä 0 - Pisteet 0</div>
+      <button id="btnStart" class="startBtn">Aloita</button>
+    </section>
+
+    <!-- VIEW 2: TRAINING -->
+    <section id="viewTrain" class="panel" aria-label="Harjoittelu">
+      <div class="toprow">
+        <div id="timer" class="timer">03:00</div>
+        <div id="progress" class="progress">1 / 40</div>
+      </div>
+
+      <div id="task" class="task">1 + __ = 4</div>
+
+      <div class="answers" role="group" aria-label="Vastaukset">
+        <button class="ansBtn" id="a0">2</button>
+        <button class="ansBtn" id="a1">5</button>
+        <button class="ansBtn" id="a2">3</button>
+        <button class="ansBtn" id="a3">1</button>
+      </div>
+
+      <div class="smallRow">
+        <button id="btnReset1" class="resetBtn">Uudelleen</button>
+      </div>
+    </section>
+
+    <!-- VIEW 3: SUMMARY -->
+    <section id="viewDone" class="panel" aria-label="Tulos">
+      <div class="title">Valmis</div>
+      <div id="scoreBig" class="scoreBig">0 / 0</div>
+      <div id="badge" class="badge">ok</div>
+      <div class="smallRow" style="margin-top:14px;">
+        <button id="btnReset2" class="resetBtn">Uudelleen</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    (function(){
+      const viewStart = document.getElementById("viewStart");
+      const viewTrain = document.getElementById("viewTrain");
+      const viewDone  = document.getElementById("viewDone");
+
+      const btnStart  = document.getElementById("btnStart");
+      const btnReset1 = document.getElementById("btnReset1");
+      const btnReset2 = document.getElementById("btnReset2");
+
+      const timerEl   = document.getElementById("timer");
+      const progressEl= document.getElementById("progress");
+      const taskEl    = document.getElementById("task");
+
+      const ansBtns = [
+        document.getElementById("a0"),
+        document.getElementById("a1"),
+        document.getElementById("a2"),
+        document.getElementById("a3")
+      ];
+
+      let totalN = 0;
+      let index = 0;        // 0..totalN-1
+      let correct = 0;
+      let secondsLeft = 180;
+      let tHandle = null;
+
+      let currentCorrectAnswer = 0;
+
+      function rndInt(min, max){ // inclusive
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function shuffle(arr){
+        for(let i = arr.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function showOnly(panel){
+        viewStart.classList.remove("active");
+        viewTrain.classList.remove("active");
+        viewDone.classList.remove("active");
+        panel.classList.add("active");
+      }
+
+      function fmtTime(sec){
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+      }
+
+      function stopTimer(){
+        if(tHandle){
+          clearInterval(tHandle);
+          tHandle = null;
+        }
+      }
+
+      function startTimer(){
+        stopTimer();
+        timerEl.textContent = fmtTime(secondsLeft);
+        tHandle = setInterval(() => {
+          secondsLeft--;
+          if(secondsLeft <= 0){
+            secondsLeft = 0;
+            timerEl.textContent = fmtTime(secondsLeft);
+            stopTimer();
+            finish();
+            return;
+          }
+          timerEl.textContent = fmtTime(secondsLeft);
+        }, 1000);
+      }
+
+      function setAnswerButtonsEnabled(enabled){
+        for(const b of ansBtns){
+          b.disabled = !enabled;
+        }
+      }
+
+      function genTask(){
+        // Patterns:
+        // 1) A + X = B  (B>=A) -> X = B-A
+        // 2) X + A = B  (B>=A) -> X = B-A
+        // 3) A + B = X  (A+B<=10) -> X = A+B
+        const pattern = rndInt(1,3);
+
+        let A, B, X, text;
+
+        if(pattern === 1){
+          A = rndInt(0,10);
+          B = rndInt(A,10);
+          X = B - A;
+          text = `${A} + __ = ${B}`;
+        } else if(pattern === 2){
+          A = rndInt(0,10);
+          B = rndInt(A,10);
+          X = B - A;
+          text = `__ + ${A} = ${B}`;
+        } else {
+          A = rndInt(0,10);
+          B = rndInt(0,10 - A);
+          X = A + B;
+          text = `${A} + ${B} = __`;
+        }
+
+        currentCorrectAnswer = X;
+        taskEl.textContent = text;
+
+        const opts = new Set();
+        opts.add(X);
+        while(opts.size < 4){
+          opts.add(rndInt(0,10));
+        }
+
+        const optArr = shuffle(Array.from(opts));
+        for(let i=0;i<4;i++){
+          ansBtns[i].textContent = String(optArr[i]);
+          ansBtns[i].dataset.value = String(optArr[i]);
+        }
+      }
+
+      function updateProgress(){
+        progressEl.textContent = `${Math.min(index+1, totalN)} / ${totalN}`;
+      }
+
+      function nextOrFinish(){
+        index++;
+        if(index >= totalN){
+          finish();
+          return;
+        }
+        updateProgress();
+        genTask();
+        setAnswerButtonsEnabled(true);
+      }
+
+      function finish(){
+        stopTimer();
+        showOnly(viewDone);
+
+        const scoreText = `${correct} / ${totalN}`;
+        document.getElementById("scoreBig").textContent = scoreText;
+
+        const pct = totalN > 0 ? (correct / totalN) : 0;
+        let msg = ":-(";
+        if(pct >= 0.90) msg = "erinomaista";
+        else if(pct >= 0.80) msg = "hienoa";
+        else if(pct >= 0.70) msg = "ok";
+        document.getElementById("badge").textContent = msg;
+      }
+
+      function resetAll(){
+        stopTimer();
+        totalN = rndInt(40,50);
+        index = 0;
+        correct = 0;
+        secondsLeft = 180;
+
+        timerEl.textContent = fmtTime(secondsLeft);
+        updateProgress();
+        genTask();
+        setAnswerButtonsEnabled(true);
+
+        document.querySelector("#viewStart .title").textContent = "Tehtävä 0 - Pisteet 0";
+        showOnly(viewStart);
+      }
+
+      function startGame(){
+        totalN = rndInt(40,50);
+        index = 0;
+        correct = 0;
+        secondsLeft = 180;
+
+        updateProgress();
+        genTask();
+        setAnswerButtonsEnabled(true);
+
+        showOnly(viewTrain);
+        startTimer();
+      }
+
+      // Answer clicks
+      for(const b of ansBtns){
+        b.addEventListener("click", () => {
+          setAnswerButtonsEnabled(false);
+          const v = Number(b.dataset.value);
+          if(v === currentCorrectAnswer){
+            correct++;
+          }
+          nextOrFinish();
+        });
+      }
+
+      btnStart.addEventListener("click", startGame);
+      btnReset1.addEventListener("click", resetAll);
+      btnReset2.addEventListener("click", resetAll);
+
+      // Init
+      resetAll();
+    })();
+  </script>
+</body>
+</html>
