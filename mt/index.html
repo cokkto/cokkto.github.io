@@ -2,474 +2,1142 @@
 <html lang="fi">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Matikkatreeni</title>
-  <style>
-    :root {
-      --bg: #f6f0f0;
-      --card: #d8d2cf;
-      --ink: #111;
-      --muted: #444;
-      --border: #111;
-      --accent: #111;
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Matikkatreeni</title>
+    <style>
+        :root {
+            --bg: #f6f0f0;
+            --card: #d8d2cf;
+            --ink: #111;
+            --muted: #444;
+            --border: #111;
+            --accent: #111;
+            --selBg: #fff;
+        }
 
-    * {
-      box-sizing: border-box
-    }
+        * {
+            box-sizing: border-box
+        }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+        }
 
-    .wrap {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 24px 18px 32px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px 16px 28px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .panel {
-      width: 100%;
-      display: none;
-      text-align: center;
-    }
+        .panel {
+            width: 100%;
+            display: none;
+            text-align: center;
+        }
 
-    .panel.active {
-      display: block
-    }
+        .panel.active {
+            display: block
+        }
 
-    .title {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: .2px;
-      color: var(--muted);
-      margin: 0 0 18px;
-    }
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: .2px;
+            color: var(--muted);
+            margin: 0 0 14px;
+        }
 
-    .startBtn {
-      font-size: 42px;
-      padding: 22px 42px;
-      border: 4px solid var(--border);
-      background: #fff;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: 700;
-    }
+        .sub {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--muted);
+            margin: 18px 0 10px;
+            text-align: left;
+            max-width: 920px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    .startBtn:active {
-      transform: translateY(1px)
-    }
+        .rowWrap {
+            max-width: 920px;
+            margin: 0 auto 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
 
-    .toprow {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 0 auto 18px;
-      max-width: 720px;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
+        .chip {
+            border: 2px solid var(--border);
+            background: var(--card);
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: .2px;
+            white-space: nowrap;
+        }
 
-    .timer {
-      font-size: 22px;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      min-width: 140px;
-      text-align: left;
-    }
+        .chip:active {
+            transform: translateY(1px)
+        }
 
-    .progress {
-      font-size: 22px;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      min-width: 140px;
-      text-align: right;
-    }
+        .chip.selected {
+            background: var(--selBg);
+            border-width: 3px;
+            box-shadow: 0 0 0 2px var(--border) inset;
+        }
 
-    .task {
-      font-size: 96px;
-      font-weight: 800;
-      line-height: 1.1;
-      margin: 10px 0 26px;
-      user-select: none;
-    }
+        .chip.small {
+            font-size: 15px;
+            padding: 9px 12px;
+        }
 
-    .answers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      max-width: 720px;
-      margin: 0 auto 22px;
-    }
+        .startBtn {
+            font-size: 40px;
+            padding: 18px 38px;
+            border: 4px solid var(--border);
+            background: #fff;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 900;
+            margin-top: 16px;
+        }
 
-    .ansBtn {
-      height: min(200px, 22vh);
-      border: 3px solid var(--border);
-      background: var(--card);
-      font-size: 86px;
-      font-weight: 800;
-      cursor: pointer;
-      border-radius: 6px;
-      user-select: none;
-    }
+        .startBtn:active {
+            transform: translateY(1px)
+        }
 
-    .ansBtn:active {
-      transform: translateY(1px)
-    }
+        .hint {
+            max-width: 920px;
+            margin: 10px auto 0;
+            text-align: left;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.35;
+        }
 
-    .ansBtn[disabled] {
-      opacity: .75;
-      cursor: not-allowed
-    }
+        /* TEST VIEW (based on your sample layout) */
+        .toprow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 0 auto 18px;
+            max-width: 720px;
+            font-weight: 900;
+            letter-spacing: .2px;
+        }
 
-    .smallRow {
-      max-width: 720px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-    }
+        .timer,
+        .progress {
+            font-size: 22px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            min-width: 160px;
+        }
 
-    .resetBtn {
-      font-size: 16px;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      background: #fff;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-    }
+        .timer {
+            text-align: left;
+        }
 
-    .resetBtn:active {
-      transform: translateY(1px)
-    }
+        .progress {
+            text-align: right;
+        }
 
-    .scoreBig {
-      font-size: 72px;
-      font-weight: 900;
-      margin: 6px 0 10px;
-    }
+        .task {
+            font-size: 96px;
+            font-weight: 900;
+            line-height: 1.08;
+            margin: 10px 0 22px;
+            user-select: none;
+        }
 
-    .scoreSm {
-      font-size: 48px;
-      font-weight: 900;
-      margin: 6px 0 10px;
-    }
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            max-width: 720px;
+            margin: 0 auto 18px;
+        }
 
-    .badge {
-      display: inline-block;
-      font-size: 34px;
-      font-weight: 900;
-      padding: 12px 18px;
-      border: 3px solid var(--border);
-      border-radius: 14px;
-      background: #fff;
-      margin: 8px 0 18px;
-    }
+        .ansBtn {
+            height: min(190px, 22vh);
+            border: 3px solid var(--border);
+            background: var(--card);
+            font-size: 80px;
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 10px;
+            user-select: none;
+        }
 
-    @media (max-width:520px) {
-      .task {
-        font-size: 70px
-      }
+        .ansBtn:active {
+            transform: translateY(1px)
+        }
 
-      .ansBtn {
-        font-size: 64px
-      }
+        .ansBtn[disabled] {
+            opacity: .75;
+            cursor: not-allowed
+        }
 
-      .scoreBig {
-        font-size: 54px
-      }
+        .smallRow {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-      .badge {
-        font-size: 26px
-      }
+        .resetBtn {
+            font-size: 16px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            background: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 900;
+        }
 
-      .startBtn {
-        font-size: 34px
-      }
+        .resetBtn:active {
+            transform: translateY(1px)
+        }
 
-      .toprow {
-        flex-direction: column
-      }
+        /* SUMMARY */
+        .scoreBig {
+            font-size: 72px;
+            font-weight: 950;
+            margin: 10px 0 10px;
+        }
 
-      .timer,
-      .progress {
-        min-width: 100%;
-        text-align: center
-      }
-    }
-  </style>
+        .scoreSm {
+            font-size: 42px;
+            font-weight: 950;
+            margin: 6px 0 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 30px;
+            font-weight: 950;
+            padding: 12px 18px;
+            border: 3px solid var(--border);
+            border-radius: 14px;
+            background: #fff;
+            margin: 8px 0 18px;
+        }
+
+        @media (max-width: 640px) {
+            .task {
+                font-size: 66px
+            }
+
+            .ansBtn {
+                font-size: 56px
+            }
+
+            .startBtn {
+                font-size: 32px
+            }
+
+            .toprow {
+                flex-direction: column
+            }
+
+            .timer,
+            .progress {
+                min-width: 100%;
+                text-align: center
+            }
+
+            .rowWrap {
+                justify-content: center;
+            }
+
+            .sub,
+            .hint {
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="wrap">
+    <div class="wrap">
+        <!-- VIEW 1: SELECT -->
+        <section id="viewStart" class="panel active" aria-label="Aloitus">
+            <div class="title">Matikkatreeni</div>
 
-    <!-- VIEW 1: START -->
-    <section id="viewStart" class="panel active" aria-label="Aloitus">
-      <div class="title">Tehtävä</div>
-      <button id="btnStart" class="startBtn">Aloita</button>
-    </section>
+            <div class="sub">Testien määrä</div>
+            <div class="rowWrap" id="pickCount"></div>
 
-    <!-- VIEW 2: TRAINING -->
-    <section id="viewTrain" class="panel" aria-label="Harjoittelu">
-      <div class="toprow">
-        <div id="timer" class="timer">03:00</div>
-        <div id="progress" class="progress">1 / 40</div>
-      </div>
+            <div class="sub">Ajastin</div>
+            <div class="rowWrap" id="pickTimer"></div>
 
-      <div id="task" class="task">1 + __ = 4</div>
+            <div class="sub">Yhteenlasku</div>
+            <div class="rowWrap" id="pickAdd"></div>
 
-      <div class="answers" role="group" aria-label="Vastaukset">
-        <button class="ansBtn" id="a0">2</button>
-        <button class="ansBtn" id="a1">5</button>
-        <button class="ansBtn" id="a2">3</button>
-        <button class="ansBtn" id="a3">1</button>
-      </div>
+            <div class="sub">Vähennyslasku</div>
+            <div class="rowWrap" id="pickSub"></div>
 
-      <div class="smallRow">
-        <button id="btnReset1" class="resetBtn">Uudelleen</button>
-      </div>
-    </section>
+            <div class="sub">Peruslaskut</div>
+            <div class="rowWrap" id="pickBasic"></div>
 
-    <!-- VIEW 3: SUMMARY -->
-    <section id="viewDone" class="panel" aria-label="Tulos">
-      <div class="title">Valmis</div>
-      <div id="scoreTime" class="scoreSm">0 / 0</div>
-      <div id="scoreText" class="scoreBig">0 / 0</div>
-      <div id="badge" class="badge">ok</div>
-      <div class="smallRow" style="margin-top:14px;">
-        <button id="btnReset2" class="resetBtn">Uudelleen</button>
-      </div>
-    </section>
+            <div class="sub">Kertolasku</div>
+            <div class="rowWrap" id="pickMul"></div>
 
-  </div>
+            <div class="sub">Jakolasku</div>
+            <div class="rowWrap" id="pickDiv"></div>
 
-  <script>
-    (function () {
-      const elViewStart = document.getElementById("viewStart");
-      const elViewTrain = document.getElementById("viewTrain");
-      const elViewDone = document.getElementById("viewDone");
+            <button id="btnStart" class="startBtn">Aloita</button>
 
-      const btnStart = document.getElementById("btnStart");
-      const btnReset1 = document.getElementById("btnReset1");
-      const btnReset2 = document.getElementById("btnReset2");
+            <div class="hint">
+                Valitse yksi tehtävätyyppi. Ajastin: 4 sek / tehtävä (esim. 50 → 200 s).
+            </div>
+        </section>
 
-      const elTimer = document.getElementById("timer");
-      const elProgress = document.getElementById("progress");
-      const elTask = document.getElementById("task");
+        <!-- VIEW 2: TEST -->
+        <section id="viewTrain" class="panel" aria-label="Harjoittelu">
+            <div class="toprow">
+                <div id="timer" class="timer">--:--</div>
+                <div id="progress" class="progress">1 / 30</div>
+            </div>
 
-      const elScoreText = document.getElementById("scoreText");
-      const elScoreTime = document.getElementById("scoreTime");
+            <div id="task" class="task">__</div>
 
-      const ansBtns = [
-        document.getElementById("a0"),
-        document.getElementById("a1"),
-        document.getElementById("a2"),
-        document.getElementById("a3")
-      ];
+            <div class="answers" role="group" aria-label="Vastaukset">
+                <button class="ansBtn" id="a0"></button>
+                <button class="ansBtn" id="a1"></button>
+                <button class="ansBtn" id="a2"></button>
+                <button class="ansBtn" id="a3"></button>
+            </div>
 
-      const secondsMax = 180;
-      const verboseResult = ["Erinomaista!", "Hienoa", "Ok", ":-("];
-      const tasksMinMax = [40, 50];
+            <div class="smallRow">
+                <button id="btnBack1" class="resetBtn">Takaisin</button>
+            </div>
+        </section>
 
-      let totalN = 0;
-      let index = 0;        // 0..totalN-1
-      let correct = 0;
-      let secondsLeft = 180;
-      let tHandle = null;
+        <!-- VIEW 3: SUMMARY -->
+        <section id="viewDone" class="panel" aria-label="Tulos">
+            <div class="title">Valmis</div>
+            <div id="scoreTime" class="scoreSm">Aika: 00:00</div>
+            <div id="scoreText" class="scoreBig">0 / 0</div>
+            <div id="badge" class="badge">—</div>
+            <div class="smallRow" style="margin-top:14px;">
+                <button id="btnBack2" class="resetBtn">Takaisin</button>
+            </div>
+        </section>
+    </div>
 
-      let currentCorrectAnswer = 0;
+    <script>
+        const MathTaskGen = (() => {
+            const OPS = new Set(["+", "-", "*", "/"]);
 
-      function secToHuman(sec) {
-        const m = Math.floor(sec / 60);
-        const s = sec % 60;
-        return `${m}:${String(s).padStart(2, "0")}`;
-      }
+            const MISSING_PATTERNS = [
+                (A, B, C, O) => [A, null, C, O], // missing B
+                (A, B, C, O) => [null, B, C, O], // missing A
+                (A, B, C, O) => [A, B, null, O], // missing C
+            ];
 
-      function rndInt(min, max) { // inclusive
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
+            function assert(cond, msg) {
+                if (!cond) throw new Error(msg);
+            }
 
-      function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-      }
+            function toInt(v, name) {
+                const n = Number(v);
+                assert(Number.isFinite(n), `${name} must be finite`);
+                assert(Number.isInteger(n), `${name} must be integer`);
+                return n;
+            }
 
-      function showOnly(panel) {
-        elViewStart.classList.remove("active");
-        elViewTrain.classList.remove("active");
-        elViewDone.classList.remove("active");
-        panel.classList.add("active");
-      }
+            function normRange(r, name) {
+                assert(r && typeof r === "object", `${name} must be {min,max}`);
+                const min = r.min == null ? null : toInt(r.min, `${name}.min`);
+                const max = r.max == null ? null : toInt(r.max, `${name}.max`);
+                if (min != null && max != null) assert(min <= max, `${name}.min must be <= ${name}.max`);
+                return { min, max };
+            }
 
-      function fmtTime(sec) {
-        const m = Math.floor(sec / 60);
-        const s = sec % 60;
-        return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
-      }
+            function normOperators(arr) {
+                assert(Array.isArray(arr) && arr.length > 0, `operators must be non-empty array`);
+                const ops = [];
+                for (const o of arr) {
+                    assert(typeof o === "string" && o.length === 1, `operators must contain 1-char strings`);
+                    assert(OPS.has(o), `unsupported operator: ${o}`);
+                    ops.push(o);
+                }
+                return ops;
+            }
 
-      function stopTimer() {
-        if (tHandle) {
-          clearInterval(tHandle);
-          tHandle = null;
-        }
-      }
+            function normFractionType(ft) {
+                if (ft == null) return "n";
+                assert(typeof ft === "string", `fractionType must be a string`);
+                const v = ft.trim().toLowerCase();
+                assert(v === "n" || v === "d", `fractionType must be "n" or "d"`);
+                return v;
+            }
 
-      function startTimer() {
-        stopTimer();
-        elTimer.textContent = fmtTime(secondsLeft);
-        tHandle = setInterval(() => {
-          secondsLeft--;
-          if (secondsLeft <= 0) {
-            secondsLeft = 0;
-            elTimer.textContent = fmtTime(secondsLeft);
-            stopTimer();
-            finish();
-            return;
-          }
-          elTimer.textContent = fmtTime(secondsLeft);
-        }, 1000);
-      }
+            function randInt(min, max) {
+                return (Math.random() * (max - min + 1) + min) | 0;
+            }
 
-      function setAnswerButtonsEnabled(enabled) {
-        for (const b of ansBtns) {
-          b.disabled = !enabled;
-        }
-      }
+            function pick(arr) {
+                return arr[randInt(0, arr.length - 1)];
+            }
 
-      function genTask() {
-        // Patterns:
-        // 1) A + X = B  (B>=A) -> X = B-A
-        // 2) X + A = B  (B>=A) -> X = B-A
-        // 3) A + B = X  (A+B<=10) -> X = A+B
-        const pattern = rndInt(1, 3);
+            function shuffleInPlace(a) {
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = randInt(0, i);
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
 
-        let A, B, X, text;
+            function gcd(a, b) {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b) {
+                    const t = a % b;
+                    a = b;
+                    b = t;
+                }
+                return a || 1;
+            }
 
-        if (pattern === 1) {
-          A = rndInt(0, 10);
-          B = rndInt(A, 10);
-          X = B - A;
-          text = `${A} + __ = ${B}`;
-        } else if (pattern === 2) {
-          A = rndInt(0, 10);
-          B = rndInt(A, 10);
-          X = B - A;
-          text = `__ + ${A} = ${B}`;
-        } else {
-          A = rndInt(0, 10);
-          B = rndInt(0, 10 - A);
-          X = A + B;
-          text = `${A} + ${B} = __`;
-        }
+            function simplifyFrac(n, d) {
+                assert(d !== 0, "division by zero");
+                const sign = (n < 0) ^ (d < 0) ? -1 : 1;
+                n = Math.abs(n);
+                d = Math.abs(d);
+                const g = gcd(n, d);
+                n = (n / g) * sign;
+                d = d / g;
+                return { n, d };
+            }
 
-        currentCorrectAnswer = X;
-        elTask.textContent = text;
+            function formatResult(result, fractionType) {
+                // result: {kind:"int", v} | {kind:"frac", n, d}
+                if (result.kind === "int") return String(result.v);
 
-        const opts = new Set();
-        opts.add(X);
-        while (opts.size < 4) {
-          opts.add(rndInt(0, 10));
-        }
+                const { n, d } = simplifyFrac(result.n, result.d);
 
-        const optArr = shuffle(Array.from(opts));
-        for (let i = 0; i < 4; i++) {
-          ansBtns[i].textContent = String(optArr[i]);
-          ansBtns[i].dataset.value = String(optArr[i]);
-        }
-      }
+                if (fractionType === "d") return (n / d).toFixed(2);
 
-      function updateProgress() {
-        elProgress.textContent = `${Math.min(index + 1, totalN)} / ${totalN}`;
-      }
+                // "n" => must be whole number
+                assert(n % d === 0, `non-integer result not allowed with fractionType="n"`);
+                return String(n / d);
+            }
 
-      function nextOrFinish() {
-        index++;
-        if (index >= totalN) {
-          finish();
-          return;
-        }
-        updateProgress();
-        genTask();
-        setAnswerButtonsEnabled(true);
-      }
+            function withinLimitsNumber(x, lim) {
+                if (lim.min != null && x < lim.min) return false;
+                if (lim.max != null && x > lim.max) return false;
+                return true;
+            }
 
-      function finish() {
-        stopTimer();
-        showOnly(elViewDone);
+            function withinLimitsResult(res, lim, fractionType) {
+                if (res.kind === "int") return withinLimitsNumber(res.v, lim);
 
-        const scoreTime = `${secToHuman(secondsMax - secondsLeft)}`;
-        const scoreText = `${correct} / ${totalN}`;
-        elScoreText.textContent = scoreText;
-        elScoreTime.textContent = scoreTime;
+                const { n, d } = simplifyFrac(res.n, res.d);
+                const v = n / d;
 
-        const pct = totalN > 0 ? (correct / totalN) : 0;
-        let msg = verboseResult[3];
-        if (pct >= 0.90) msg = verboseResult[0];
-        else if (pct >= 0.80) msg = verboseResult[1];
-        else if (pct >= 0.70) msg = verboseResult[2];
-        document.getElementById("badge").textContent = msg;
-      }
+                // limits are numeric, compare numeric value (works for both "d" and "n")
+                return withinLimitsNumber(v, lim);
+            }
 
-      function initGame(show) {
-        stopTimer();
-        totalN = rndInt(tasksMinMax[0], tasksMinMax[1]);
-        index = 0;
-        correct = 0;
-        secondsLeft = secondsMax;
+            function compute(A, B, op, fractionType) {
+                switch (op) {
+                    case "+":
+                        return { kind: "int", v: A + B };
+                    case "-":
+                        return { kind: "int", v: A - B };
+                    case "*":
+                        return { kind: "int", v: A * B };
+                    case "/":
+                        if (B === 0) return null;
+                        if (fractionType === "n") {
+                            if (A % B !== 0) return null;
+                            return { kind: "int", v: A / B };
+                        }
+                        return { kind: "frac", n: A, d: B };
+                    default:
+                        return null;
+                }
+            }
 
-        elTimer.textContent = fmtTime(secondsLeft);
-        updateProgress();
-        genTask();
-        setAnswerButtonsEnabled(true);
+            function buildTaskPool(config) {
+                const rangeA = normRange(config.rangeA, "rangeA");
+                const rangeB = normRange(config.rangeB, "rangeB");
+                const resultLimits = normRange(config.resultLimits ?? {}, "resultLimits");
+                const fractionType = normFractionType(config.fractionType);
+                const operators = normOperators(config.operators);
 
-        showOnly(show);
-      }
+                assert(rangeA.min != null && rangeA.max != null, "rangeA.min/max must be set");
+                assert(rangeB.min != null && rangeB.max != null, "rangeB.min/max must be set");
 
-      function resetAll() {
-        initGame(elViewStart);
-      }
+                const pool = [];
+                for (const op of operators) {
+                    for (let A = rangeA.min; A <= rangeA.max; A++) {
+                        for (let B = rangeB.min; B <= rangeB.max; B++) {
+                            const res = compute(A, B, op, fractionType);
+                            if (!res) continue;
+                            if (!withinLimitsResult(res, resultLimits, fractionType)) continue;
 
-      function startGame() {
-        initGame(elViewTrain);
-        startTimer();
-      }
+                            const C = formatResult(res, fractionType);
 
-      // Answer clicks
-      for (const b of ansBtns) {
-        b.addEventListener("click", () => {
-          setAnswerButtonsEnabled(false);
-          const v = Number(b.dataset.value);
-          if (v === currentCorrectAnswer) {
-            correct++;
-          }
-          nextOrFinish();
-        });
-      }
+                            pool.push({
+                                A: String(A),
+                                B: String(B),
+                                C,
+                                O: op,
+                                res, // keep structured for distractors
+                            });
+                        }
+                    }
+                }
+                return { pool, fractionType };
+            }
 
-      btnStart.addEventListener("click", startGame);
-      btnReset1.addEventListener("click", resetAll);
-      btnReset2.addEventListener("click", resetAll);
+            function makeEquationWithMissing(task, missingIndex /*0:A 1:B 2:C*/) {
+                const A = task.A;
+                const B = task.B;
+                const C = task.C;
+                const O = task.O;
 
-      // Init
-      resetAll();
-    })();
-  </script>
+                // [A,B,C,O] -> apply missing
+                if (missingIndex === 0) return [null, B, C, O];
+                if (missingIndex === 1) return [A, null, C, O];
+                return [A, B, null, O];
+            }
+
+            function determineCorrectValue(task, missingIndex) {
+                if (missingIndex === 0) return task.A;
+                if (missingIndex === 1) return task.B;
+                return task.C;
+            }
+
+            function uniqueStrings(arr) {
+                const s = new Set();
+                const out = [];
+                for (const x of arr) {
+                    const k = String(x);
+                    if (s.has(k)) continue;
+                    s.add(k);
+                    out.push(k);
+                }
+                return out;
+            }
+
+            function generateAnswers(pool, correct, totalAnswers) {
+                const need = totalAnswers;
+                assert(need >= 2, "totalAnswers must be >= 2");
+
+                const candidates = [];
+                for (const t of pool) {
+                    // allow any of A/B/C as distractors pool-wide; this naturally includes decimals when fractionType="d"
+                    candidates.push(t.A, t.B, t.C);
+                }
+
+                const uniq = uniqueStrings(candidates).filter((x) => x !== correct);
+
+                // if not enough unique distractors, we still return as many as possible (but always include correct)
+                const distractorsCount = Math.max(0, need - 1);
+                shuffleInPlace(uniq);
+
+                const answers = [correct, ...uniq.slice(0, distractorsCount)];
+                shuffleInPlace(answers);
+
+                // ensure length == totalAnswers (pad by reusing distractors if needed)
+                while (answers.length < need) {
+                    // if we have no distractors at all, just duplicate correct (edge case)
+                    const fallback = uniq.length ? pick(uniq) : correct;
+                    answers.push(fallback);
+                }
+
+                shuffleInPlace(answers);
+                return answers;
+            }
+
+            function chooseMissingIndex(config) {
+                // optional: allow config.missing = "A"|"B"|"C"|"random"
+                const m = (config.missing ?? "random").toString().toUpperCase();
+                if (m === "A") return 0;
+                if (m === "B") return 1;
+                if (m === "C") return 2;
+                return randInt(0, 2);
+            }
+
+            return {
+                // PUBLIC
+                generate(config, count = 1) {
+                    const totalAnswers = config.totalAnswers == null ? 4 : toInt(config.totalAnswers, "totalAnswers");
+                    const n = toInt(count, "count");
+                    assert(n >= 1, "count must be >= 1");
+
+                    const { pool } = buildTaskPool(config);
+                    assert(pool.length > 0, "No valid tasks for given constraints");
+
+                    const out = [];
+                    for (let i = 0; i < n; i++) {
+                        const task = pick(pool);
+                        const missingIndex = chooseMissingIndex(config);
+
+                        const equation = makeEquationWithMissing(task, missingIndex);
+                        const correct = determineCorrectValue(task, missingIndex);
+
+                        const answers = generateAnswers(pool, correct, totalAnswers);
+
+                        out.push({
+                            equation, // one of: [A,null,C,O], [null,B,C,O], [A,B,null,O]
+                            answer: {
+                                correct,
+                                answers,
+                            },
+                        });
+                    }
+
+                    return out;
+                },
+
+                // HELPERS
+                _utils: {
+                    buildTaskPool,
+                    simplifyFrac,
+                    formatResult,
+                },
+            };
+        })();
+
+
+        (function () {
+            // Assumes MathTaskGen already exists globally (provided by you)
+
+            const elViewStart = document.getElementById("viewStart");
+            const elViewTrain = document.getElementById("viewTrain");
+            const elViewDone = document.getElementById("viewDone");
+
+            const btnStart = document.getElementById("btnStart");
+            const btnBack1 = document.getElementById("btnBack1");
+            const btnBack2 = document.getElementById("btnBack2");
+
+            const elTimer = document.getElementById("timer");
+            const elProgress = document.getElementById("progress");
+            const elTask = document.getElementById("task");
+
+            const elScoreText = document.getElementById("scoreText");
+            const elScoreTime = document.getElementById("scoreTime");
+            const elBadge = document.getElementById("badge");
+
+            const ansBtns = [
+                document.getElementById("a0"),
+                document.getElementById("a1"),
+                document.getElementById("a2"),
+                document.getElementById("a3")
+            ];
+
+            const pickCount = document.getElementById("pickCount");
+            const pickTimer = document.getElementById("pickTimer");
+            const pickAdd = document.getElementById("pickAdd");
+            const pickSub = document.getElementById("pickSub");
+            const pickBasic = document.getElementById("pickBasic");
+            const pickMul = document.getElementById("pickMul");
+            const pickDiv = document.getElementById("pickDiv");
+
+            function showOnly(panel) {
+                elViewStart.classList.remove("active");
+                elViewTrain.classList.remove("active");
+                elViewDone.classList.remove("active");
+                panel.classList.add("active");
+            }
+
+            function fmtTime(sec) {
+                sec = Math.max(0, sec | 0);
+                const m = Math.floor(sec / 60);
+                const s = sec % 60;
+                return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+            }
+
+            function shuffleInPlace(a) {
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            function setAnswerButtonsEnabled(enabled) {
+                for (const b of ansBtns) b.disabled = !enabled;
+            }
+
+            function eqToText(eq) {
+                // eq: [A,B,C,O] where one is null
+                const [A, B, C, O] = eq;
+                const a = A == null ? "__" : String(A);
+                const b = B == null ? "__" : String(B);
+                const c = C == null ? "__" : String(C);
+                return `${a} ${O} ${b} = ${c}`;
+            }
+
+            function makeChip(text, onClick, isSelectedFn) {
+                const b = document.createElement("button");
+                b.type = "button";
+                b.className = "chip";
+                b.textContent = text;
+                b.addEventListener("click", () => {
+                    onClick();
+                    refreshAllSelections();
+                });
+                b._isSelectedFn = isSelectedFn;
+                return b;
+            }
+
+            function refreshSelection(container) {
+                const btns = Array.from(container.querySelectorAll("button.chip"));
+                for (const b of btns) {
+                    if (typeof b._isSelectedFn === "function" && b._isSelectedFn()) b.classList.add("selected");
+                    else b.classList.remove("selected");
+                }
+            }
+
+            function refreshAllSelections() {
+                refreshSelection(pickCount);
+                refreshSelection(pickTimer);
+                refreshSelection(pickAdd);
+                refreshSelection(pickSub);
+                refreshSelection(pickBasic);
+                refreshSelection(pickMul);
+                refreshSelection(pickDiv);
+            }
+
+            // --- Config presets (as per your spec) ---
+            const presets = {
+                add: [],
+                sub: [],
+                basic: [],
+                mul: [],
+                div: []
+            };
+
+            // Addition 1..10 (a fixed, b 0..10)
+            for (let n = 1; n <= 10; n++) {
+                presets.add.push({
+                    label: String(n),
+                    secondsPerTask: 3,
+                    cfg: {
+                        rangeA: { min: n, max: n },
+                        rangeB: { min: 0, max: 10 },
+                        resultLimits: { min: null, max: null },
+                        operators: ["+"],
+                        fractionType: "n",
+                        totalAnswers: 4
+                    }
+                });
+            }
+            presets.add.push({
+                label: "0 - 10",
+                secondsPerTask: 3,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 10 },
+                    operators: ["+"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.add.push({
+                label: "0 - 20",
+                secondsPerTask: 4,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 20 },
+                    operators: ["+"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.add.push({
+                label: "0 - 100",
+                secondsPerTask: 7,
+                cfg: {
+                    rangeA: { min: 0, max: 100 },
+                    rangeB: { min: 0, max: 100 },
+                    resultLimits: { min: 0, max: 100 },
+                    operators: ["+"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+
+            // Subtraction 1..10 (a fixed, b 0..10, op "-") -> keep results non-negative and within 0..10
+            for (let n = 1; n <= 10; n++) {
+                presets.sub.push({
+                    label: String(n),
+                    secondsPerTask: 3,
+                    cfg: {
+                        rangeA: { min: n, max: n },
+                        rangeB: { min: 0, max: 10 },
+                        resultLimits: { min: 0, max: 10 },
+                        operators: ["-"],
+                        fractionType: "n",
+                        totalAnswers: 4
+                    }
+                });
+            }
+            presets.sub.push({
+                label: "0 - 10",
+                secondsPerTask: 3,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 10 },
+                    operators: ["-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.sub.push({
+                label: "0 - 20",
+                secondsPerTask: 4,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 20 },
+                    operators: ["-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.sub.push({
+                label: "0 - 100",
+                secondsPerTask: 7,
+                cfg: {
+                    rangeA: { min: 0, max: 100 },
+                    rangeB: { min: 0, max: 100 },
+                    resultLimits: { min: 0, max: 100 },
+                    operators: ["-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+
+            // Basic math ( + and - )
+            presets.basic.push({
+                label: "0 - 10",
+                secondsPerTask: 3,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 10 },
+                    operators: ["+", "-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.basic.push({
+                label: "0 - 20",
+                secondsPerTask: 4,
+                cfg: {
+                    rangeA: { min: 0, max: 10 },
+                    rangeB: { min: 0, max: 10 },
+                    resultLimits: { min: 0, max: 20 },
+                    operators: ["+", "-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+            presets.basic.push({
+                label: "0 - 100",
+                secondsPerTask: 7,
+                cfg: {
+                    rangeA: { min: 0, max: 100 },
+                    rangeB: { min: 0, max: 100 },
+                    resultLimits: { min: 0, max: 100 },
+                    operators: ["+", "-"],
+                    fractionType: "n",
+                    totalAnswers: 4
+                }
+            });
+
+            // Multiplication 2..9 (a fixed, b 0..10)
+            for (let n = 2; n <= 9; n++) {
+                presets.mul.push({
+                    label: String(n),
+                    secondsPerTask: 4,
+                    cfg: {
+                        rangeA: { min: n, max: n },
+                        rangeB: { min: 0, max: 10 },
+                        resultLimits: { min: null, max: null },
+                        operators: ["*"],
+                        fractionType: "n",
+                        totalAnswers: 4
+                    }
+                });
+            }
+
+            // Division 2..9 (integer division only; avoids non-integers)
+            for (let n = 2; n <= 9; n++) {
+                presets.div.push({
+                    label: String(n),
+                    secondsPerTask: 4,
+                    cfg: {
+                        rangeA: { min: 1, max: 10 },
+                        rangeB: { min: n, max: n },
+                        resultLimits: { min: null, max: null },
+                        operators: ["/"],
+                        fractionType: "n",
+                        totalAnswers: 4
+                    }
+                });
+            }
+
+            // --- UI state ---
+            const state = {
+                totalTests: 30,
+                timerOn: false,
+                selectedPresetKey: "add",
+                selectedPresetIndex: 0,
+
+                tasks: [],
+                i: 0,
+                correct: 0,
+
+                // timer
+                secondsLeft: 0,
+                secondsPerTask: 4, // NEW: current preset time
+                timerHandle: null,
+                startedAtMs: 0,
+                endedAtMs: 0
+            };
+
+            function clearTaskSelection() {
+                state.selectedPresetKey = "";
+                state.selectedPresetIndex = -1;
+            }
+
+            function selectPreset(key, idx) {
+                state.selectedPresetKey = key;
+                state.selectedPresetIndex = idx;
+            }
+
+            function getSelectedPreset() {
+                const key = state.selectedPresetKey;
+                const idx = state.selectedPresetIndex;
+                const arr = presets[key] || [];
+                return arr[idx] || null;
+            }
+
+            // --- Build selection view ---
+            function buildSelectionUI() {
+                // Count buttons
+                pickCount.innerHTML = "";
+                const counts = [10, 30, 50];
+                for (const c of counts) {
+                    pickCount.appendChild(makeChip(
+                        String(c),
+                        () => { state.totalTests = c; },
+                        () => state.totalTests === c
+                    ));
+                }
+
+                // Timer buttons
+                pickTimer.innerHTML = "";
+                pickTimer.appendChild(makeChip(
+                    "Päällä",
+                    () => { state.timerOn = true; },
+                    () => state.timerOn === true
+                ));
+                pickTimer.appendChild(makeChip(
+                    "Pois",
+                    () => { state.timerOn = false; },
+                    () => state.timerOn === false
+                ));
+
+                // Task buttons
+                function fill(container, key, arr) {
+                    container.innerHTML = "";
+                    arr.forEach((p, idx) => {
+                        container.appendChild(makeChip(
+                            p.label,
+                            () => selectPreset(key, idx),
+                            () => state.selectedPresetKey === key && state.selectedPresetIndex === idx
+                        ));
+                    });
+                }
+
+                fill(pickAdd, "add", presets.add);
+                fill(pickSub, "sub", presets.sub);
+                fill(pickBasic, "basic", presets.basic);
+                fill(pickMul, "mul", presets.mul);
+                fill(pickDiv, "div", presets.div);
+
+                // default selection
+                selectPreset("basic", 1); // 0-20 basic
+                refreshAllSelections();
+            }
+
+            // --- Game flow ---
+            function stopTimer() {
+                if (state.timerHandle) {
+                    clearInterval(state.timerHandle);
+                    state.timerHandle = null;
+                }
+            }
+
+            function startTimerIfOn() {
+                stopTimer();
+                if (!state.timerOn) {
+                    elTimer.textContent = "--:--";
+                    return;
+                }
+                elTimer.textContent = fmtTime(state.secondsLeft);
+                state.timerHandle = setInterval(() => {
+                    state.secondsLeft--;
+                    if (state.secondsLeft <= 0) {
+                        state.secondsLeft = 0;
+                        elTimer.textContent = fmtTime(0);
+                        stopTimer();
+                        finish();
+                        return;
+                    }
+                    elTimer.textContent = fmtTime(state.secondsLeft);
+                }, 1000);
+            }
+
+            function updateProgress() {
+                elProgress.textContent = `${Math.min(state.i + 1, state.tasks.length)} / ${state.tasks.length}`;
+            }
+
+            function renderCurrent() {
+                const t = state.tasks[state.i];
+                elTask.textContent = eqToText(t.equation);
+
+                // totalAnswers might differ; we show up to 4 buttons (UI fixed 4)
+                const answers = (t.answer && Array.isArray(t.answer.answers)) ? t.answer.answers : [];
+                for (let i = 0; i < ansBtns.length; i++) {
+                    const b = ansBtns[i];
+                    const v = answers[i] ?? "";
+                    b.textContent = v;
+                    b.dataset.value = v;
+                    b.disabled = (v === "");
+                }
+                setAnswerButtonsEnabled(true);
+            }
+
+            function nextOrFinish() {
+                state.i++;
+                if (state.i >= state.tasks.length) {
+                    finish();
+                    return;
+                }
+                updateProgress();
+                renderCurrent();
+            }
+
+            function finish() {
+                stopTimer();
+                state.endedAtMs = Date.now();
+
+                const total = state.tasks.length;
+                const plannedTotal = state.totalTests * state.secondsPerTask;
+
+                const usedSec = state.timerOn
+                    ? (plannedTotal - state.secondsLeft)
+                    : Math.max(0, Math.round((state.endedAtMs - state.startedAtMs) / 1000));
+
+                const pct = total > 0 ? (state.correct / total) : 0;
+
+                let msg = "Kokeile uudelleen.";
+                if (pct >= 0.95) msg = "Erinomaista! Olet valmis.";
+                else if (pct >= 0.85) msg = "Hienoa työtä! Jatka samaan malliin.";
+                else if (pct >= 0.70) msg = "Hyvä! Vielä vähän harjoitusta.";
+                else msg = "Tarvitset lisää harjoitusta. Älä luovuta.";
+
+                elScoreTime.textContent = `Aika: ${fmtTime(usedSec)}`;
+                elScoreText.textContent = `${state.correct} / ${total}`;
+                elBadge.textContent = msg;
+
+                showOnly(elViewDone);
+            }
+
+            function resetToStart() {
+                stopTimer();
+                state.tasks = [];
+                state.i = 0;
+                state.correct = 0;
+                state.secondsLeft = 0;
+                state.startedAtMs = 0;
+                state.endedAtMs = 0;
+                elTask.textContent = "__";
+                elTimer.textContent = "--:--";
+                elProgress.textContent = `0 / ${state.totalTests}`;
+                showOnly(elViewStart);
+            }
+
+            function startGame() {
+                const preset = getSelectedPreset();
+                if (!preset) return;
+
+                state.secondsPerTask = preset.secondsPerTask ?? 4; // NEW
+
+                const cfg = Object.assign({}, preset.cfg, { totalAnswers: 4 });
+
+                const tasks = MathTaskGen.generate(cfg, state.totalTests);
+
+                state.tasks = tasks;
+                state.i = 0;
+                state.correct = 0;
+
+                // NEW: timer budget based on preset secondsPerTask
+                state.secondsLeft = state.totalTests * state.secondsPerTask;
+                state.startedAtMs = Date.now();
+
+                updateProgress();
+                renderCurrent();
+                startTimerIfOn();
+                showOnly(elViewTrain);
+            }
+
+            // --- Events ---
+            for (const b of ansBtns) {
+                b.addEventListener("click", () => {
+                    setAnswerButtonsEnabled(false);
+                    const t = state.tasks[state.i];
+                    const chosen = String(b.dataset.value ?? "");
+                    if (t && t.answer && String(t.answer.correct) === chosen) state.correct++;
+                    nextOrFinish();
+                });
+            }
+
+            btnStart.addEventListener("click", startGame);
+            btnBack1.addEventListener("click", resetToStart);
+            btnBack2.addEventListener("click", resetToStart);
+
+            // init
+            buildSelectionUI();
+            resetToStart();
+            refreshAllSelections();
+        })();
+    </script>
+
+    <!--
+    NOTE:
+    Include your MathTaskGen object before this script (or above in the same <script> section).
+  -->
 </body>
 
 </html>
