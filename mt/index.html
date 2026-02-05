@@ -711,6 +711,31 @@
                 return a;
             }
 
+            function flashWrong(btn) {
+                btn.style.transition = "opacity 0.5s ease";
+                btn.style.background = "#D67373";
+                // force reflow so transition applies reliably
+                void btn.offsetHeight;
+                btn.style.opacity = "0";
+                btn.disabled = true;
+            }
+
+            function flashCorrect(btn) {
+                btn.style.transition = "background 0.15s ease";
+                btn.style.background = "#99D677";
+                btn.disabled = true;
+            }
+
+            // optional: reset answer buttons visuals when rendering a new task
+            function resetAnswerButtonVisuals() {
+                for (const b of ansBtns) {
+                    b.style.opacity = "";
+                    b.style.transition = "";
+                    b.style.background = "";
+                    b.disabled = false;
+                }
+            }
+
             function setAnswerButtonsEnabled(enabled) {
                 for (const b of ansBtns) b.disabled = !enabled;
             }
@@ -1056,6 +1081,7 @@
             }
 
             function renderCurrent() {
+                resetAnswerButtonVisuals();
                 const t = state.tasks[state.i];
                 elTask.textContent = eqToText(t.equation);
 
@@ -1148,10 +1174,28 @@
             // --- Events ---
             for (const b of ansBtns) {
                 b.addEventListener("click", () => {
-                    setAnswerButtonsEnabled(false);
                     const t = state.tasks[state.i];
                     const chosen = String(b.dataset.value ?? "");
-                    if (t && t.answer && String(t.answer.correct) === chosen) state.correct++;
+                    const isCorrect = t && t.answer && String(t.answer.correct) === chosen;
+
+                    if (!state.timerOn) {
+                        // Educational mode: wrong -> fade away; correct -> green then next
+                        if (!isCorrect) {
+                            flashWrong(b);
+                            return; // stay on the same task
+                        }
+
+                        // correct
+                        state.correct++;
+                        flashCorrect(b);
+                        setTimeout(() => {
+                            nextOrFinish();
+                        }, 500);
+                        return;
+                    }
+
+                    // Timer ON: keep the old fast flow (immediate next)
+                    if (isCorrect) state.correct++;
                     nextOrFinish();
                 });
             }
