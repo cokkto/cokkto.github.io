@@ -541,34 +541,67 @@
                 return out;
             }
 
-            function generateAnswers(pool, correct, totalAnswers) {
+            function generateAnswers(pool, correct, totalAnswers, missingIndex, cfg, task) {
                 const need = totalAnswers;
-                assert(need >= 2, "totalAnswers must be >= 2");
+                const slot = missingIndex === 0 ? "A" : (missingIndex === 1 ? "B" : "C");
 
-                const candidates = [];
-                for (const t of pool) {
-                    // allow any of A/B/C as distractors pool-wide; this naturally includes decimals when fractionType="d"
-                    candidates.push(t.A, t.B, t.C);
+                const out = [];
+                const used = new Set();
+                const add = (v) => {
+                    const s = String(v);
+                    if (!s || used.has(s)) return false;
+                    used.add(s);
+                    out.push(s);
+                    return true;
+                };
+
+                add(correct);
+
+                // 1) primary: same-slot candidates
+                const slotCandidates = uniqueStrings(pool.map(t => t[slot])).filter(x => x !== correct);
+                shuffleInPlace(slotCandidates);
+                for (const x of slotCandidates) {
+                    if (out.length >= need) break;
+                    add(x);
                 }
 
-                const uniq = uniqueStrings(candidates).filter((x) => x !== correct);
+                // 2) fallback: use numeric near-misses (prevents 6,6,6,6)
+                const correctNum = Number(correct);
+                const isInt = Number.isFinite(correctNum) && Number.isInteger(correctNum);
 
-                // if not enough unique distractors, we still return as many as possible (but always include correct)
-                const distractorsCount = Math.max(0, need - 1);
-                shuffleInPlace(uniq);
+                // choose a numeric range to sample from
+                const r =
+                    slot === "A" ? cfg.rangeA :
+                        slot === "B" ? cfg.rangeB :
+                            (cfg.resultLimits ?? { min: 0, max: 100 });
 
-                const answers = [correct, ...uniq.slice(0, distractorsCount)];
-                shuffleInPlace(answers);
+                const min = (r && r.min != null) ? Number(r.min) : 0;
+                const max = (r && r.max != null) ? Number(r.max) : 100;
 
-                // ensure length == totalAnswers (pad by reusing distractors if needed)
-                while (answers.length < need) {
-                    // if we have no distractors at all, just duplicate correct (edge case)
-                    const fallback = uniq.length ? pick(uniq) : correct;
-                    answers.push(fallback);
+                if (Number.isFinite(min) && Number.isFinite(max) && isInt) {
+                    for (let d = 1; out.length < need && d <= 20; d++) {
+                        const a = correctNum - d;
+                        const b = correctNum + d;
+                        if (a >= min && a <= max) add(a);
+                        if (out.length >= need) break;
+                        if (b >= min && b <= max) add(b);
+                    }
                 }
 
-                shuffleInPlace(answers);
-                return answers;
+                // 3) last resort: borrow from other slots (still unique)
+                if (out.length < need) {
+                    const extra = uniqueStrings(pool.flatMap(t => [t.A, t.B, t.C])).filter(x => x !== correct);
+                    shuffleInPlace(extra);
+                    for (const x of extra) {
+                        if (out.length >= need) break;
+                        add(x);
+                    }
+                }
+
+                // pad (should be rare now)
+                while (out.length < need) add(String(correct) + "_"); // guaranteed unique, won’t match correct
+
+                return shuffleInPlace(out).slice(0, need);
             }
 
             function chooseMissingIndex(config) {
@@ -598,7 +631,7 @@
                         const equation = makeEquationWithMissing(task, missingIndex);
                         const correct = determineCorrectValue(task, missingIndex);
 
-                        const answers = generateAnswers(pool, correct, totalAnswers);
+                        const answers = generateAnswers(pool, correct, totalAnswers, missingIndex, config, task);
 
                         out.push({
                             equation, // one of: [A,null,C,O], [null,B,C,O], [A,B,null,O]
@@ -881,7 +914,7 @@
                     cfg: {
                         rangeA: { min: n, max: n },
                         rangeB: { min: 0, max: 10 },
-                        resultLimits: { min: null, max: null },
+                        resultLimits: { min: 0, max: 100 },
                         operators: ["*"],
                         fractionType: "n",
                         totalAnswers: 4
@@ -895,9 +928,9 @@
                     label: String(n),
                     secondsPerTask: 4,
                     cfg: {
-                        rangeA: { min: 1, max: 10 },
+                        rangeA: { min: n, max: n * 10 },     // IMPORTANT to include range to 100
                         rangeB: { min: n, max: n },
-                        resultLimits: { min: null, max: null },
+                        resultLimits: { min: 0, max: 100 },
                         operators: ["/"],
                         fractionType: "n",
                         totalAnswers: 4
