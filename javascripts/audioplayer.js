@@ -10,7 +10,7 @@ window.initAudioPlayer = function (trackList, albumFolder) {
 
   if (!player || !playBtn || !seekbar) return;
 
-  const audioBasePath = "./audio/" + folder + "/";
+  const audioBasePath = "/audio/" + folder + "/";
 
   let currentIndex = -1;
   let isPlaying = false;
