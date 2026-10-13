@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music · cocteau.name</title>
+  <meta name="description" content="Listen to music by Aleksi Salo. Explore Zerone: Be-side and Zerone, from summer light to Nordic winter, with full albums and tracklists.">
+  <meta name="author" content="Aleksi Salo">
+  <link rel="canonical" href="https://cocteau.name/music/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="cocteau.name">
+  <meta property="og:title" content="Music · Aleksi Salo">
+  <meta property="og:description" content="Listen to music by Aleksi Salo. Explore Zerone: Be-side and Zerone, from summer light to Nordic winter, with full albums and tracklists.">
+  <meta property="og:url" content="https://cocteau.name/music/">
+  <meta property="og:image" content="https://cocteau.name/metaimages/cocteau.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Music · Aleksi Salo">
+  <meta name="twitter:description" content="Listen to music by Aleksi Salo. Explore Zerone: Be-side and Zerone, from summer light to Nordic winter, with full albums and tracklists.">
+  <meta name="twitter:image" content="https://cocteau.name/metaimages/cocteau.png">
+  <link rel="stylesheet" href="/stylesheets/site.css">
+
+  <script type="module" src="/javascripts/audioplayer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/">cocteau.name<small>MUSIC &amp; CODE</small></a>
+    <nav aria-label="Main"><a href="https://cocteau.name/wkly-datetime-picker/">WKLY</a><a href="/music/" aria-current="page">Music</a></nav>
+  </div></header>
+  <main id="main" class="wrap"><section class="intro stack"><p class="eyebrow">Music by Aleksi Salo</p><h1>Small stories.<br>Room to listen.</h1><p>I started with words, moods and sounds recorded at home, then shaped them into songs with guitars, piano and AI tools. The voices are synthetic; the stories and feelings are my own. Coming from graphic design, this is my way of learning to compose with sound instead of images.</p></section>
+  <div class="album-grid"><article class="album-card"><div class="cover-wrap"><a href="/music/be-side/" aria-label="Explore Zerone: Be-side"><img class="art" src="/audio/zerone-be-side/zerone-be-side.jpg" alt="Zerone: Be-side album artwork" width="600" height="600"></a><button class="cover-play" data-play-album="zerone-be-side" aria-label="Play Zerone: Be-side" disabled><span class="triangle" aria-hidden="true"></span><span>Play</span></button></div><div class="stack"><p class="meta">Indie rock / Post-rock · 2025 · 8 tracks</p><h2><a href="/music/be-side/">Zerone: Be-side</a></h2><p>Long summer light, late-July rain and the slow arrival of autumn. A quieter record about atmosphere, memory and the passing of seasons.</p><a href="/music/be-side/">About the album &amp; tracks ↗</a></div></article>
+<article class="album-card"><div class="cover-wrap"><a href="/music/zerone/" aria-label="Explore Zerone"><img class="art" src="/audio/zerone/zerone.jpg" alt="Zerone album artwork" width="600" height="600"></a><button class="cover-play" data-play-album="zerone" aria-label="Play Zerone" disabled><span class="triangle" aria-hidden="true"></span><span>Play</span></button></div><div class="stack"><p class="meta">Post-rock · 2025 · 8 tracks</p><h2><a href="/music/zerone/">Zerone</a></h2><p>From autumn light to the frostbitten edge of spring. Guitars, slow crescendos and a little resistance to the thaw.</p><a href="/music/zerone/">About the album &amp; tracks ↗</a></div></article></div>
+  <noscript><p>Open an album to listen using the audio file links.</p></noscript></main>
+  <footer class="site-footer"><div class="wrap footer-inner"><span>Aleksi Salo · Made in the Nordics.</span><a href="https://linkedin.com/in/cocteau">LinkedIn</a></div></footer>
+  <section class="player player-bar" data-player hidden aria-label="Music player">
+
+    <div class="now-playing"><img data-now-cover  alt="" width="50" height="50"><div><span class="track-name" data-track-name></span><a class="album-name" data-album-name></a></div></div>
+    <div class="transport"><div class="controls">
+      <button class="control secondary" data-action="repeat" aria-label="Repeat album" aria-pressed="false" title="Repeat album" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m16 2 4 4-4 4M4 11V9a3 3 0 0 1 3-3h13M8 22l-4-4 4-4m12-1v2a3 3 0 0 1-3 3H4"/></svg></button>
+      <button class="control" data-action="previous" aria-label="Previous track" title="Previous track" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h3v16H4zm16 0v16L8 12z"/></svg></button>
+      <button class="control play" data-action="play" aria-label="Play" title="Play" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 13 8-13 8z"/></svg></button>
+      <button class="control" data-action="next" aria-label="Next track" title="Next track" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4h3v16h-3zM4 4l12 8-12 8z"/></svg></button>
+      <button class="control" data-action="stop" aria-label="Stop" title="Stop" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
+    </div><div class="timeline"><span data-elapsed>0:00</span><input data-seek type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek within track" disabled><span data-duration>0:00</span></div></div>
+    <a class="player-extra" data-album-link>View album ↗</a>
+    <p class="player-status" data-status role="status"></p>
+    <audio preload="none"></audio>
+  </section>
+</body>
+</html>
