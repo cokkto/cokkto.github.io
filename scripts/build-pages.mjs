@@ -60,7 +60,7 @@ function page({ title, description, path, content, album, player = false }) {
 function playerMarkup(skin, album) {
   return `<section class="player player-${skin}" data-player${album ? ` data-album="${album.id}"` : ' hidden'} aria-label="Music player">
     ${album ? `<img class="art" src="${album.cover}" alt="${escape(album.title)} album artwork" width="600" height="600">` : ''}
-    <div class="now-playing"><img data-now-cover ${album ? `src="${album.cover}"` : ''} alt="" width="50" height="50"><div><span class="track-name" data-track-name>${album ? escape(album.tracks[0].name) : ''}</span><a class="album-name" data-album-name${album ? ` href="${url(album)}"` : ''}>${album ? escape(album.title) : ''}</a></div></div>
+    <div class="now-playing"><img data-now-cover ${album ? `src="${album.cover}"` : ''} ${album ? `alt="${escape(album.title)} album artwork"` : 'alt=""'} width="50" height="50"><div><span class="track-name" data-track-name>${album ? escape(album.tracks[0].name) : ''}</span><a class="album-name" data-album-name${album ? ` href="${url(album)}"` : ''}>${album ? escape(album.title) : ''}</a></div></div>
     <div class="transport"><div class="controls">
       <button class="control secondary" data-action="repeat" aria-label="Repeat album" aria-pressed="false" title="Repeat album" disabled>${icon('repeat')}</button>
       <button class="control" data-action="previous" aria-label="Previous track" title="Previous track" disabled>${icon('previous')}</button>
