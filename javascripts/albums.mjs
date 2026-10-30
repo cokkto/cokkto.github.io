@@ -17,6 +17,7 @@ export default [
     visible: false,
     genre: "Dream rock / Art pop",
     cover: "/audio/cartography-of-weights-and-scales/cover.png",
+    metaImage: "/metaimages/cartography-of-weights-and-scales.png",
     description:
       "A private map of memory, belonging and the small things we carry. Dream rock, dark pop and restrained guitars leave room for the details.",
     seoDescription:
@@ -44,6 +45,7 @@ export default [
     visible: true,
     genre: "Indie / Post-rock",
     cover: "/audio/almost-home-again/cover.png",
+    metaImage: "/metaimages/almost-home-again.png",
     description:
       "Almost Home Again is a new album from Cold Return, an independent music project combining atmospheric indie rock, folk rock, and nordic mood. A quiet journey from outer space into memory, ancestry and the feeling of finding your way home.",
     seoDescription:
@@ -96,6 +98,7 @@ export default [
     visible: true,
     genre: "Indie rock / Post-rock",
     cover: "/audio/zerone-be-side/zerone-be-side.jpg",
+    metaImage: "/metaimages/zerone-be-side.png",
     description:
       "Long summer light, late-July rain and the slow arrival of autumn. A quieter record about atmosphere, memory and the passing of seasons.",
     seoDescription:
@@ -121,6 +124,7 @@ export default [
     visible: true,
     genre: "Post-rock",
     cover: "/audio/zerone/zerone.jpg",
+    metaImage: "/metaimages/zerone.png",
     description:
       "From autumn light to the frostbitten edge of spring. Guitars, slow crescendos and a little resistance to the thaw.",
     seoDescription:

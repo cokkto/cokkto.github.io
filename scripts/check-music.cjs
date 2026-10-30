@@ -66,6 +66,7 @@ const server = http.createServer((req, res) => {
   for (const album of albums)
     for (const file of [
       album.cover,
+      album.metaImage,
       ...album.tracks.flatMap((t) => [t.src, t.ogg]),
     ]) {
       assert.ok(fs.existsSync(path.join(root, file)), `Missing asset: ${file}`);
@@ -175,6 +176,10 @@ const server = http.createServer((req, res) => {
       );
       assert.equal(schema.numTracks, album.tracks.length);
       assert.equal(schema.track.itemListElement.length, album.tracks.length);
+      const imageUrl = `https://cocteau.name${album.metaImage}`;
+      assert.equal(schema.image, imageUrl);
+      assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"), imageUrl);
+      assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute("content"), imageUrl);
       await page.locator("[data-play-album]").click();
       await playing();
       await page.locator('[data-track="7"]').click();

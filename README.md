@@ -14,7 +14,7 @@ Open [http://localhost:8000/](http://localhost:8000/) in your browser. The first
 
 ## Editing music and pages
 
-- Edit `javascripts/albums.mjs`: album metadata, cover, descriptions, and tracks live here, newest first. Each track resolves to a name, MP3 URL and Ogg fallback URL.
+- Edit `javascripts/albums.mjs`: album metadata, cover, social image (`metaImage`), descriptions, and tracks live here, newest first. Each track resolves to a name, MP3 URL and Ogg fallback URL.
 - Set an album's `visible` field to `true` to include it on `/music/`. Hidden albums remain accessible by their direct URLs.
 - Edit homepage copy and shared HTML in `scripts/build-pages.mjs`, styling in `stylesheets/site.css`, and playback behavior in `javascripts/audioplayer.js`.
 - Run `node scripts/build-pages.mjs` after content changes and commit the generated HTML too. GitHub Pages serves these files directly; no deployment build is needed.

@@ -28,7 +28,7 @@ const musicCopy =
   "I started with words, moods and sounds recorded at home, then shaped them into songs with guitars, piano and AI tools. The voices are synthetic; the stories and feelings are my own. Coming from graphic design, this is my way of learning to compose with sound instead of images.";
 
 function page({ title, description, path, content, album, player = false }) {
-  const image = album ? album.cover : "/metaimages/cocteau.png";
+  const image = album ? album.metaImage : "/metaimages/cocteau.png";
   return `<!doctype html>
 <html lang="en">
 <head>
