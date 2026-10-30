@@ -69,7 +69,7 @@ import { fmtTime, createCountdown } from "./time.js";
   function updateProgress() {
     setText(
       elProgress,
-      `${Math.min(state.i + 1, state.tasks.length)} / ${state.tasks.length}`
+      `${Math.min(state.i + 1, state.tasks.length)} / ${state.tasks.length}`,
     );
   }
 
@@ -97,16 +97,13 @@ import { fmtTime, createCountdown } from "./time.js";
 
   function buildSelectionUI() {
     // counts
-    fillChips(
-      pickCount,
-      [10, 30, 50],
-      (c) =>
-        makeChip(
-          String(c),
-          () => (state.totalTests = c),
-          () => state.totalTests === c,
-          refreshSelections
-        )
+    fillChips(pickCount, [10, 30, 50], (c) =>
+      makeChip(
+        String(c),
+        () => (state.totalTests = c),
+        () => state.totalTests === c,
+        refreshSelections,
+      ),
     );
 
     // timer
@@ -121,8 +118,8 @@ import { fmtTime, createCountdown } from "./time.js";
           t.label,
           () => (state.timerOn = t.val),
           () => state.timerOn === t.val,
-          refreshSelections
-        )
+          refreshSelections,
+        ),
     );
 
     function fill(container, key) {
@@ -137,8 +134,8 @@ import { fmtTime, createCountdown } from "./time.js";
             () =>
               state.selectedPresetKey === key &&
               state.selectedPresetIndex === p.idx,
-            refreshSelections
-          )
+            refreshSelections,
+          ),
       );
     }
 
@@ -179,10 +176,7 @@ import { fmtTime, createCountdown } from "./time.js";
 
     const usedSec = state.timerOn
       ? plannedTotal - state.secondsLeft
-      : Math.max(
-          0,
-          Math.round((state.endedAtMs - state.startedAtMs) / 1000)
-        );
+      : Math.max(0, Math.round((state.endedAtMs - state.startedAtMs) / 1000));
 
     const pct = total ? state.correct / total : 0;
 
@@ -228,7 +222,7 @@ import { fmtTime, createCountdown } from "./time.js";
           state.secondsLeft = s;
           setText(elTimer, fmtTime(s));
         },
-        finish
+        finish,
       );
     } else {
       setText(elTimer, "--:--");
@@ -258,8 +252,7 @@ import { fmtTime, createCountdown } from "./time.js";
     b.addEventListener("click", () => {
       const t = state.tasks[state.i];
       const chosen = String(b.dataset.value ?? "");
-      const isCorrect =
-        t && t.answer && String(t.answer.correct) === chosen;
+      const isCorrect = t && t.answer && String(t.answer.correct) === chosen;
 
       if (!state.timerOn) {
         if (!isCorrect) return flashWrong(b);

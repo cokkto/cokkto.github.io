@@ -4,7 +4,7 @@
 
   <url>
        <loc>https://cocteau.name/</loc>
-       <lastmod>2026-10-13T09:33:28+00:00</lastmod>
+       <lastmod>2026-10-30</lastmod>
        <priority>1.0000</priority>
   </url>
   <url>
@@ -14,17 +14,22 @@
   </url>
   <url>
        <loc>https://cocteau.name/music/</loc>
-       <lastmod>2026-10-13T09:33:28+00:00</lastmod>
+       <lastmod>2026-10-30</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://cocteau.name/music/almost-home-again/</loc>
+       <lastmod>2026-10-30</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://cocteau.name/music/be-side/</loc>
-       <lastmod>2026-10-13T09:33:28+00:00</lastmod>
+       <lastmod>2026-10-30</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>
        <loc>https://cocteau.name/music/zerone/</loc>
-       <lastmod>2026-10-13T09:33:28+00:00</lastmod>
+       <lastmod>2026-10-30</lastmod>
        <priority>0.8000</priority>
   </url>
   <url>

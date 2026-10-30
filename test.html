@@ -1,44 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Popup Window Behavior Test</title>
-</head>
-<body>
-  <button onclick="openAndClose()">Open & auto-close</button>
+  <head>
+    <meta charset="utf-8" />
+    <title>Popup Window Behavior Test</title>
+    <meta
+      name="description"
+      content="Test opening and automatically closing browser windows and popups."
+    />
+  </head>
+  <body>
+    <button onclick="openAndClose()">Open & auto-close</button>
 
-<button onclick="openPopup()">Open & auto-close popup</button>
+    <button onclick="openPopup()">Open & auto-close popup</button>
 
-  <script>
-    function openAndClose() {
-      const w = window.open("https://google.com");
-      setTimeout(() => {
-	  console.log(w)
-        if (w && !w.closed) {
-          w.close();
-        }
-      }, 1000);
-    }
-	
-	function openPopup() {
-      // Open a small popup window (not a tab)
-      const popup = window.open(
-        "https://example.com", 
-        "popupWindow", 
-        "width=400,height=300"
-      );
-
-      if (popup) {
-        // Close it after 3 seconds
+    <script>
+      function openAndClose() {
+        const w = window.open("https://google.com");
         setTimeout(() => {
-          if (!popup.closed) {
-            popup.close();
+          console.log(w);
+          if (w && !w.closed) {
+            w.close();
           }
-        }, 3000);
-      } else {
-        alert("Popup was blocked by the browser!");
+        }, 1000);
       }
-    }
-  </script>
-</body>
+
+      function openPopup() {
+        // Open a small popup window (not a tab)
+        const popup = window.open(
+          "https://example.com",
+          "popupWindow",
+          "width=400,height=300",
+        );
+
+        if (popup) {
+          // Close it after 3 seconds
+          setTimeout(() => {
+            if (!popup.closed) {
+              popup.close();
+            }
+          }, 3000);
+        } else {
+          alert("Popup was blocked by the browser!");
+        }
+      }
+    </script>
+  </body>
 </html>

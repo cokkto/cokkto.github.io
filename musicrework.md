@@ -7,6 +7,7 @@ The process was very hands-on in spirit, even if the tools were digital. I start
 As a digital graphic designer my whole life, working on this album became an important personal milestone. It took a real shift in thinking to move from a purely visual mindset into an audible one — to start hearing composition instead of seeing it, to work with time instead of space, to feel contrast as movement rather than shape. I learned to think in layers of sound the way I once thought in layers of image, to treat silence as an expressive tool, and to explain ideas and emotions through time-demanding tracks rather than eye-catching splashes. More than anything, this project became part of a continuous learning curve — an expansion of creative borders through mixing high-tech with human emotions.
 
 # albums
+
 from new to last
 Cartography of Weights and Scales (so far hidden)
 Almost Home Again (so far hidden)
@@ -16,14 +17,15 @@ Zeron
 # SEO and structure
 
 /
-├── music/                     All albums showcase
-│   ├── zerone/                Album page
-│   ├── be-side/               Album page
-│   └── cartography-of-weights-and-scales/
+├── music/ All albums showcase
+│ ├── zerone/ Album page
+│ ├── be-side/ Album page
+│ └── cartography-of-weights-and-scales/
 
 ...
 
 Make /music/ the primary visual experience:
+
 - All albums displayed with large cover artwork.
 - Brief descriptions and release information.
 - Clicking an album opens its dedicated page.
@@ -32,10 +34,11 @@ Make /music/ the primary visual experience:
 
 Individual album pages — designed for search engines and sharing
 Each album gets its own URL, with:
+
 - Unique page title and meta description.
 - Album artwork, release date and tracklist.
 - Short album description.
 - Play Album button connected to the same player.
 - Links to streaming platforms.
 - Structured data describing the album and its tracks.
-These pages can rank for specific album titles and artist searches, and are better landing pages when someone shares a particular release.
+  These pages can rank for specific album titles and artist searches, and are better landing pages when someone shares a particular release.
