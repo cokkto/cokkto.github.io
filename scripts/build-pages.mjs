@@ -1,7 +1,7 @@
 // Run after editing the catalog. Generated HTML keeps content readable without JS.
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import albums from "../javascripts/albums.mjs";
+import albums, { musicCopy } from "../javascripts/albums.mjs";
 
 const root = new URL("../", import.meta.url);
 const escape = (value) =>
@@ -12,6 +12,13 @@ const escape = (value) =>
         c
       ],
   );
+function validateMetaDescription(metaDescription, label) {
+  if (typeof metaDescription !== "string" || !metaDescription.trim() || metaDescription.length > 160 || /<[^>]*>|&(?:#\d+|#x[\da-f]+|[a-z][\da-z]+);/i.test(metaDescription)) {
+    throw new Error(`${label} must be plain text between 1 and 160 characters.`);
+  }
+}
+
+for (const album of albums) validateMetaDescription(album.metaDescription, `${album.id} metaDescription`);
 const url = (album) => `/music/${album.slug}/`;
 const releaseDate = (album) =>
   album.releaseDate
@@ -23,11 +30,11 @@ const releaseDate = (album) =>
       }).format(new Date(`${album.releaseDate}T00:00:00Z`))
     : album.year;
 const meta = (album) =>
-  `${escape(album.genre)} · ${releaseDate(album)} · ${album.tracks.length} tracks`;
-const musicCopy =
-  "I started with words, moods and sounds recorded at home, then shaped them into songs with guitars, piano and AI tools. The voices are synthetic; the stories and feelings are my own. Coming from graphic design, this is my way of learning to compose with sound instead of images.";
-
-function page({ title, description, path, content, album, player = false }) {
+  [escape(album.genre), album.showReleaseDate ? releaseDate(album) : null, `${album.tracks.length} tracks`]
+    .filter(Boolean)
+    .join(" · ");
+function page({ title, metaDescription, path, content, album, player = false }) {
+  validateMetaDescription(metaDescription, `${path} metaDescription`);
   const image = album ? album.metaImage : "/metaimages/cocteau.png";
   return `<!doctype html>
 <html lang="en">
@@ -35,18 +42,18 @@ function page({ title, description, path, content, album, player = false }) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escape(title)} · cocteau.name</title>
-  <meta name="description" content="${escape(description)}">
+  <meta name="description" content="${escape(metaDescription)}">
   <meta name="author" content="Aleksi Salo">
   <link rel="canonical" href="https://cocteau.name${path}">
   <meta property="og:type" content="${album ? "music.album" : "website"}">
   <meta property="og:site_name" content="cocteau.name">
   <meta property="og:title" content="${escape(title)} · cocteau.name">
-  <meta property="og:description" content="${escape(description)}">
+  <meta property="og:description" content="${escape(metaDescription)}">
   <meta property="og:url" content="https://cocteau.name${path}">
   <meta property="og:image" content="https://cocteau.name${image}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escape(title)} · cocteau.name">
-  <meta name="twitter:description" content="${escape(description)}">
+  <meta name="twitter:description" content="${escape(metaDescription)}">
   <meta name="twitter:image" content="https://cocteau.name${image}">
   <link rel="stylesheet" href="/stylesheets/site.css">
   ${
@@ -58,17 +65,11 @@ function page({ title, description, path, content, album, player = false }) {
           name: album.title,
           url: `https://cocteau.name${path}`,
           image: `https://cocteau.name${image}`,
-          description: album.seoDescription || album.description,
+          description: album.metaDescription,
           genre: album.genre,
           numTracks: album.tracks.length,
           ...(album.releaseDate ? { datePublished: album.releaseDate } : {}),
-          byArtist: album.artist
-            ? { "@type": album.artist.type, name: album.artist.name }
-            : {
-                "@type": "Person",
-                name: "Aleksi Salo",
-                url: "https://cocteau.name/",
-              },
+          byArtist: { "@type": album.artist.type, name: album.artist.name, ...(album.artist.url ? { url: album.artist.url } : {}) },
           track: {
             "@type": "ItemList",
             itemListElement: album.tracks.map((track, i) => ({
@@ -134,7 +135,7 @@ function icon(name) {
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
 }
 
-const featured = albums.find((album) => album.id === "almost-home-again");
+const featured = albums.find((album) => album.featured);
 const home = `<section class="hero" aria-labelledby="wkly-title"><div class="stack">
   <p class="eyebrow">A little less clicking</p><h1 id="wkly-title">Meet WKLY.</h1>
   <p>A date and time picker that lets you scroll through weeks without jumping from month to month. Pick a day, set a time or choose a range — on your phone or at your desk.</p>
@@ -146,7 +147,7 @@ const home = `<section class="hero" aria-labelledby="wkly-title"><div class="sta
   </div></section>
   <section class="section" aria-labelledby="music-title"><div class="section-heading"><div class="stack"><p class="eyebrow">Away from the keyboard. Sort of.</p><h2 id="music-title">Learning to think in sound.</h2></div><a href="/music/">Explore the music ↗</a></div>
     <p>${musicCopy}</p>
-    <article class="feature"><a href="${url(featured)}"><img class="art" src="${featured.cover}" alt="${escape(featured.title)} album artwork" width="600" height="600" loading="lazy"></a><div class="stack"><p class="eyebrow">Featured album</p><h3>${escape(featured.title)}</h3><p class="meta">${escape(featured.artist?.name || "Aleksi Salo")} · ${meta(featured)}</p><p>${escape(featured.description)}</p><div class="actions"><a class="button primary" href="${url(featured)}">Listen to ${escape(featured.title)}</a><a href="/music/">Explore all music ↗</a></div></div></article>
+    <article class="feature"><a href="${url(featured)}"><img class="art" src="${featured.cover}" alt="${escape(featured.title)} album artwork" width="600" height="600" loading="lazy"></a><div class="stack"><p class="eyebrow">Featured album</p><h3>${escape(featured.title)}</h3><p class="meta">${escape(featured.artist.name)} · ${meta(featured)}</p><p>${featured.description}</p><div class="actions"><a class="button primary" href="${url(featured)}">Listen to ${escape(featured.title)}</a><a href="/music/">Explore all music ↗</a></div></div></article>
   </section>`;
 
 const listing = `<section class="intro stack"><p class="eyebrow">Music by Aleksi Salo</p><h1>Small stories.<br>Room to listen.</h1><p>${musicCopy}</p></section>
@@ -154,7 +155,7 @@ const listing = `<section class="intro stack"><p class="eyebrow">Music by Aleksi
     .filter((a) => a.visible)
     .map(
       (album) =>
-        `<article class="album-card"><div class="cover-wrap"><a href="${url(album)}" aria-label="Explore ${escape(album.title)}"><img class="art" src="${album.cover}" alt="${escape(album.title)} album artwork" width="600" height="600"></a><button class="cover-play" data-play-album="${album.id}" aria-label="Play ${escape(album.title)}" disabled><span class="triangle" aria-hidden="true"></span><span>Play</span></button></div><div class="stack"><p class="meta">${escape(album.artist?.name || "Aleksi Salo")} · ${meta(album)}</p><h2><a href="${url(album)}">${escape(album.title)}</a></h2><p>${escape(album.description)}</p><a href="${url(album)}">About the album &amp; tracks ↗</a></div></article>`,
+        `<article class="album-card"><div class="cover-wrap"><a href="${url(album)}" aria-label="Explore ${escape(album.title)}"><img class="art" src="${album.cover}" alt="${escape(album.title)} album artwork" width="600" height="600"></a><button class="cover-play" data-play-album="${album.id}" aria-label="Play ${escape(album.title)}" disabled><span class="triangle" aria-hidden="true"></span><span>Play</span></button></div><div class="stack"><p class="meta">${escape(album.artist.name)} · ${meta(album)}</p><h2><a href="${url(album)}">${escape(album.title)}</a></h2><p>${album.description}</p><a href="${url(album)}">About the album &amp; tracks ↗</a></div></article>`,
     )
     .join("\n")}</div>
   <noscript><p>Open an album to listen using the audio file links.</p></noscript>`;
@@ -169,7 +170,7 @@ await save(
   "index.html",
   page({
     title: "Aleksi Salo: music & code",
-    description:
+    metaDescription:
       "Aleksi Salo: making WKLY, a date and time picker for Angular, and exploring music through home recordings, stories and digital tools.",
     path: "/",
     content: home,
@@ -179,7 +180,7 @@ await save(
   "music/index.html",
   page({
     title: "Music by Aleksi Salo & Cold Return",
-    description:
+    metaDescription:
       "Listen to albums by Cold Return and Aleksi Salo. Explore atmospheric rock, stories and tracklists.",
     path: "/music/",
     content: listing,
@@ -188,17 +189,24 @@ await save(
 );
 
 for (const album of albums) {
-  const artist = album.artist || { name: "Aleksi Salo", type: "Person" };
+  const artist = album.artist;
   const heading = `<h1 id="album-title" aria-label="${escape(artist.name)}, album ${escape(album.title)}" itemscope itemtype="https://schema.org/MusicAlbum" itemid="https://cocteau.name${url(album)}"><span itemprop="byArtist" itemscope itemtype="https://schema.org/${artist.type}"><span itemprop="name">${escape(artist.name)}</span></span> <span itemprop="name">“${escape(album.title)}”</span></h1>`;
-  const content = `<div class="intro stack"><a href="/music/">← All music</a>${album.releaseLinks ? "" : `${heading}<p class="meta">${meta(album)}</p>`}</div>
-    ${album.releaseLinks ? `<section class="release-section" aria-labelledby="album-title"><div class="release-intro stack"><p class="eyebrow">Listen everywhere</p>${heading}<p class="meta">${meta(album)}</p><p><em>Almost Home Again</em> is a new album from <strong>Cold Return</strong>, an independent music project combining atmospheric indie rock, folk rock, and nordic mood.</p><p>The music and lyrics are written by a human musician, while AI gives them voices and instruments. Discover the cool, introspective sound of Cold Return, straight from the remote northern reaches of Scandinavia.</p></div><div class="release-links">${album.releaseLinks.map((link) => `<a class="release-link" href="${escape(link.url)}"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/${escape(link.icon)}.svg" alt="" width="24" height="24" loading="lazy"><span>${escape(link.name)}</span><span class="release-arrow" aria-hidden="true">↗</span></a>`).join("")}</div></section>` : ""}
+  const lang = ` lang="${escape(album.language)}"`;
+  const releaseLinks = album.releaseLinks.length
+    ? `<div class="release-links">${album.releaseLinks.map((link) => `<a class="release-link" href="${escape(link.url)}"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/${escape(link.icon)}.svg" alt="" width="24" height="24" loading="lazy"><span>${escape(link.name)}</span><span class="release-arrow" aria-hidden="true">↗</span></a>`).join("")}</div>`
+    : "";
+  const introduction = album.intro.length || album.releaseLinks.length || album.introEyebrow
+    ? `<section class="release-section" aria-labelledby="album-title"><div class="release-intro stack"${lang}>${album.introEyebrow ? `<p class="eyebrow">${escape(album.introEyebrow)}</p>` : ""}${heading}<p class="meta">${meta(album)}</p>${album.intro.map((paragraph) => `<p>${paragraph}</p>`).join("\n")}</div>${releaseLinks}</section>`
+    : "";
+  const content = `<div class="intro stack"><a href="/music/">← All music</a>${introduction ? "" : `${heading}<p class="meta">${meta(album)}</p>`}</div>
+    ${introduction}
     <p class="eyebrow listen-here">Listen here</p>
-    <div class="album-layout"><div>${playerMarkup("full", album)}<noscript><p>JavaScript is off. Use the audio links below to listen.</p></noscript></div><section aria-label="Album tracks"><div class="stack"><p>${escape(album.description)}</p><div><button class="button primary" data-play-album="${album.id}" disabled>Play album</button></div></div><ol class="tracklist">${album.tracks.map((track, i) => `<li id="track-${i + 1}"><button data-track="${i}" disabled><span class="track-number">${String(i + 1).padStart(2, "0")}</span><span>${escape(track.name)}</span></button><noscript><a href="${escape(encodeURI(track.src))}">Listen to ${escape(track.name)}</a></noscript></li>`).join("")}</ol><p class="album-copy">${escape(album.detail)}</p>${album.id === "zerone-be-side" ? `<p class="album-copy">${escape(musicCopy)}</p>` : ""}</section></div>`;
+    <div class="album-layout"><div>${playerMarkup("full", album)}<noscript><p>JavaScript is off. Use the audio links below to listen.</p></noscript></div><section aria-label="Album tracks"><div class="stack"><p${lang}>${album.description}</p><div><button class="button primary" data-play-album="${album.id}" disabled>Play album</button></div></div><ol class="tracklist">${album.tracks.map((track, i) => `<li id="track-${i + 1}"><button data-track="${i}" disabled><span class="track-number">${String(i + 1).padStart(2, "0")}</span><span>${escape(track.name)}</span></button><noscript><a href="${escape(encodeURI(track.src))}">Listen to ${escape(track.name)}</a></noscript></li>`).join("")}</ol>${album.detail.map((detail) => `<p class="album-copy"${lang}>${detail}</p>`).join("")}</section></div>`;
   await save(
     `music/${album.slug}/index.html`,
     page({
       title: `${artist.name} — ${album.title}`,
-      description: album.seoDescription || album.description,
+      metaDescription: album.metaDescription,
       path: url(album),
       content,
       album,
@@ -211,5 +219,5 @@ for (const album of albums) {
   );
 }
 console.log(
-  "Generated homepage, music listing, four album pages and legacy redirects.",
+  `Generated homepage, music listing, ${albums.length} album pages and legacy redirects.`,
 );

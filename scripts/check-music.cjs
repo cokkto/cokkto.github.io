@@ -63,6 +63,8 @@ const server = http.createServer((req, res) => {
   const { default: albums } = await import(
     pathToFileURL(path.join(root, "javascripts/albums.mjs"))
   );
+  const beSide = albums.find((album) => album.id === "zerone-be-side");
+  const zerone = albums.find((album) => album.id === "zerone");
   for (const album of albums)
     for (const file of [
       album.cover,
@@ -116,13 +118,13 @@ const server = http.createServer((req, res) => {
     await playing();
     assert.equal(
       await page.locator("[data-track-name]").textContent(),
-      albums[2].tracks[0].name,
+      beSide.tracks[0].name,
     );
     await page.locator('[data-action="next"]').click();
     await playing();
     assert.equal(
       await page.locator("[data-track-name]").textContent(),
-      albums[2].tracks[1].name,
+      beSide.tracks[1].name,
     );
     await page.locator('[data-action="previous"]').click();
     await playing();
@@ -149,7 +151,7 @@ const server = http.createServer((req, res) => {
     await playing();
     assert.equal(
       await page.locator("[data-track-name]").textContent(),
-      albums[3].tracks[0].name,
+      zerone.tracks[0].name,
     );
     for (const width of [320, 390, 1440]) {
       await page.setViewportSize({ width, height: 844 });
@@ -229,7 +231,7 @@ const server = http.createServer((req, res) => {
     await playing();
     assert.equal(
       await page.locator("[data-track-name]").textContent(),
-      albums[2].tracks[0].name,
+      beSide.tracks[0].name,
     );
     // A missing MP3 should use the existing Ogg fallback.
     const supportsOgg = await page

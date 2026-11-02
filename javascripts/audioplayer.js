@@ -88,7 +88,7 @@ function initAudioPlayer(root) {
     if ("mediaSession" in navigator && "MediaMetadata" in window) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.name,
-        artist: "Aleksi Salo",
+        artist: album.artist.name,
         album: album.title,
         artwork: [{ src: album.cover }],
       });
